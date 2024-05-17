@@ -52,3 +52,88 @@ body {
   width: 24px;
   height: 24px;
 }
+
+.QuestionButton {
+	background:linear-gradient(to bottom, #44c767 5%, #5cbf2a 100%);
+	background-color:#44c767;
+	border-radius:28px;
+	border:1px solid #18ab29;
+  position:fixed;
+  top:70%;
+  left:31%;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Verdana;
+	font-size:20px;
+  height: 8vh;
+  width: 18.3vw;
+	text-decoration:none;
+	text-shadow:0px -1px 8px #2f6627;
+}
+.QuestionButton:hover {
+	background:linear-gradient(to bottom, #5cbf2a 5%, #44c767 100%);
+	background-color:#5cbf2a;
+}
+.QuestionButton:active {
+	position:fixed;
+	top:70%;
+}
+
+/* .input-text {
+  border:1px solid #18ab29;
+  background-color:rgba(13, 6, 6, 0.24);
+  border-radius:28px;
+  border:none;
+  position:fixed;
+  top:70%;
+  left:50%;
+  height: 55px;
+  width: 100px;
+  font-size:20px;
+  display: flex;
+}  */
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+}
+
+.logo {
+  max-width: 15%;
+  height:auto;
+}
+
+.input-text {
+  padding: 5px;
+  font-size: 20px;
+  text-align: center;
+  background-color: rgba(0,0,0,0);
+  border:2px solid #18ab29;
+  color: #ffffff;
+  position:fixed;
+  top:70%;
+  left:51%;
+  height: 8vh;
+  width: 18.3vw;
+  border-style: solid;
+  border-radius: 28px;
+}
+
+.input-text::placeholder {
+  color:#ffffff;
+}
+
+.output-text {
+  text-align: left;
+  background-color: rgba(0,0,0,0);
+  border:2px solid #18ab29;
+  border-radius: 28px;
+  color: #ffffff;
+  position:fixed;
+  top:35%;
+  left:35%;
+  height: 30vh;
+  width: 30vw;
+}

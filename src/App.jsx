@@ -1,8 +1,42 @@
 import React from 'react';
 import { createAssistant, createSmartappDebugger } from '@salutejs/client';
+import logo100 from './res/logo100-transformed.png';
 
 import './App.css';
-import { TaskList } from './pages/TaskList';
+
+const Button = () => {
+  return (
+    <button href="#" class="QuestionButton" onClick={() => alert('Button clicked!')}>
+      Выдать вопрос
+    </button>
+  );
+}
+
+export default Button;
+
+const Logo = () => {
+  return (
+     <div class="logo-container">
+        <img src={logo100} alt="Logo" class="logo"/>
+     </div>
+  );
+};
+
+const Input = () => {
+  return (
+    <div>
+      <input type="text" class="input-text" placeholder="Введите ответ:"/>
+    </div>
+  )
+}
+
+const QuestionOutputArea = () => {
+  return (
+    <div>
+      <output class="output-text"/>
+    </div>
+  )
+}
 
 const initializeAssistant = (getState /*: any*/, getRecoveryState) => {
   if (process.env.NODE_ENV === 'development') {
@@ -21,16 +55,6 @@ const initializeAssistant = (getState /*: any*/, getRecoveryState) => {
   return createAssistant({ getState });
   }
 };
-
-const Button = () => {
-  return (
-    <button onClick={() => alert('Button clicked!')}>
-      Click me 
-      </button>
-  );
-}
-
-export default Button;
 
 export class App extends React.Component {
   constructor(props) {
@@ -178,16 +202,10 @@ export class App extends React.Component {
     console.log('render');
     return (
       <>
-        <TaskList
-          items={this.state.notes}
-          onAdd={(note) => {
-            this.add_note({ type: 'add_note', note });
-          }}
-          onDone={(note) => {
-            this.play_done_note(note.id);
-            this.done_note({ type: 'done_note', id: note.id });
-          }}
-        />
+        <Logo></Logo>
+        <Button></Button>
+        <Input></Input>
+        <QuestionOutputArea></QuestionOutputArea>
       </>
     );
   }
