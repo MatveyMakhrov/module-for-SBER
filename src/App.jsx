@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { createAssistant, createSmartappDebugger } from '@salutejs/client';
 import logo100 from './res/logo100-transformed.png';
 import { useState } from 'react';
@@ -13,6 +13,36 @@ import './App.css';
 // };
 
 // export default Button;
+
+const InfoButton = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
+  return (
+    <div className='container' onClick={toggleMenu}>
+      <button class = "InfoButton">
+    <span>i</span>
+    <span class="nfo">NFO</span>
+    </button>
+
+    {isMenuOpen && (
+        <div className="info-menu">
+          <span className="close-button" onClick={closeMenu}>X</span>
+          <p>Help info test</p>
+          {/* Add more information here */}
+        </div>
+      )}
+    </div>
+  );
+};
+
 
 const Logo = () => {
   return (
@@ -226,6 +256,7 @@ export class App extends React.Component {
         <Logo></Logo>
         {/* <Button></Button> */}
         <Input></Input>
+        <InfoButton></InfoButton>
         {/* <QuestionOutputArea></QuestionOutputArea> */}
         <ButtonOutputComponent></ButtonOutputComponent>
       </>
