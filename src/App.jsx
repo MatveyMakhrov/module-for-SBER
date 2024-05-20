@@ -1,18 +1,18 @@
 import React from 'react';
 import { createAssistant, createSmartappDebugger } from '@salutejs/client';
 import logo100 from './res/logo100-transformed.png';
-
+import { useState } from 'react';
 import './App.css';
 
-const Button = () => {
-  return (
-    <button href="#" class="QuestionButton" onClick={() => alert('Button clicked!')}>
-      Выдать вопрос
-    </button>
-  );
-}
+// const Button = () => {
+// return (
+//   <button href="#" class="QuestionButton" onClick={ alert('Ok!')}>
+//     Выдать вопрос
+//   </button>
+// )
+// };
 
-export default Button;
+// export default Button;
 
 const Logo = () => {
   return (
@@ -30,31 +30,52 @@ const Input = () => {
   )
 }
 
-const QuestionOutputArea = () => {
+// const QuestionOutputArea = () => {
+//   return (
+//     <div>
+//       <output class="output-text"/>
+//     </div>
+//   )
+// }
+
+
+function ButtonOutputComponent() {
+  // Состояние для хранения текста
+  const [outputText, setOutputText] = useState('');
+
+  // Функция для обработки нажатия на кнопку
+  const handleButtonClick = () => {
+    // Устанавливаем текст, который нужно вывести
+    setOutputText('яяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяя');
+  };
+
   return (
     <div>
-      <output class="output-text"/>
+      {/* Кнопка, которая вызывает функцию handleButtonClick */}
+      <button href="#" class="QuestionButton" onClick={handleButtonClick}>Выдай вопрос</button>
+      {/* Элемент <output>, в который выводится текст */}
+      <output class="output-text">{outputText}</output>
     </div>
-  )
+  );
 }
 
-const initializeAssistant = (getState /*: any*/, getRecoveryState) => {
+function initializeAssistant(getState /*: any*/, getRecoveryState) {
   if (process.env.NODE_ENV === 'development') {
     return createSmartappDebugger({
       token: process.env.REACT_APP_TOKEN ?? '',
       initPhrase: `Запусти ${process.env.REACT_APP_SMARTAPP}`,
-      getState,                                           
+      getState,
       // getRecoveryState: getState,                                           
       nativePanel: {
         defaultText: 'Я Вас слушаю',
         screenshotMode: false,
         tabIndex: -1,
-    },
+      },
     });
   } else {
-  return createAssistant({ getState });
+    return createAssistant({ getState });
   }
-};
+}
 
 export class App extends React.Component {
   constructor(props) {
@@ -203,9 +224,10 @@ export class App extends React.Component {
     return (
       <>
         <Logo></Logo>
-        <Button></Button>
+        {/* <Button></Button> */}
         <Input></Input>
-        <QuestionOutputArea></QuestionOutputArea>
+        {/* <QuestionOutputArea></QuestionOutputArea> */}
+        <ButtonOutputComponent></ButtonOutputComponent>
       </>
     );
   }
