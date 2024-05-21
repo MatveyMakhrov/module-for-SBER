@@ -42,7 +42,8 @@ BROWSER=none
 docker build -t <image_name> .
 ```
 Данный скрирт создаст docker-образ с именем, который вы ему дадите
-Затем
+
+Затем создадим контейнер следующей командой
 
 ```bash
 docker run -p 3000:3000 --name <container_name> <image_name>
