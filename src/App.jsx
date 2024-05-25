@@ -1,18 +1,32 @@
 import React, { useState } from 'react';
 import { createAssistant, createSmartappDebugger } from '@salutejs/client';
 import logo100 from './res/logo100-transformed.png';
-import { useState } from 'react';
 import './App.css';
 
-// const Button = () => {
-// return (
-//   <button href="#" class="QuestionButton" onClick={ alert('Ok!')}>
-//     Выдать вопрос
-//   </button>
-// )
-// };
+let TrueAnswer = ''
+function ButtonOutputComponent() {
+  const [outputText, setOutputText] = useState('');
 
-// export default Button;
+  const handleButtonClick = async () => {
+    try {
+      let response = await fetch('http://localhost:8080/api/v1/question/random');
+      let data = await response.json();
+      setOutputText(data.question.text);
+      TrueAnswer = data.question.answer;
+      //alert(TrueAnswer) 
+    } catch (error) {
+      console.error('Error fetching question:', error);
+      alert(error);
+    }
+  };
+
+  return (
+    <div>
+      <button href="#" className="QuestionButton" onClick={handleButtonClick}>Выдай вопрос</button>
+      <output className="output-text">{outputText}</output>
+    </div>
+  );
+}
 
 const InfoButton = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -42,53 +56,6 @@ const InfoButton = () => {
     </div>
   );
 };
-
-
-const Logo = () => {
-  return (
-     <div class="logo-container">
-        <img src={logo100} alt="Logo" class="logo"/>
-     </div>
-  );
-};
-
-const Input = () => {
-  return (
-    <div>
-      <input type="text" class="input-text" placeholder="Введите ответ:"/>
-    </div>
-  )
-}
-
-// const QuestionOutputArea = () => {
-//   return (
-//     <div>
-//       <output class="output-text"/>
-//     </div>
-//   )
-// }
-
-
-function ButtonOutputComponent() {
-  // Состояние для хранения текста
-  const [outputText, setOutputText] = useState('');
-
-  // Функция для обработки нажатия на кнопку
-  const handleButtonClick = () => {
-    // Устанавливаем текст, который нужно вывести
-    setOutputText('яяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяя');
-  };
-
-  return (
-    <div>
-      {/* Кнопка, которая вызывает функцию handleButtonClick */}
-      <button href="#" class="QuestionButton" onClick={handleButtonClick}>Выдай вопрос</button>
-      {/* Элемент <output>, в который выводится текст */}
-      <output class="output-text">{outputText}</output>
-    </div>
-  );
-}
-
 function initializeAssistant(getState /*: any*/, getRecoveryState) {
   if (process.env.NODE_ENV === 'development') {
     return createSmartappDebugger({
@@ -106,6 +73,68 @@ function initializeAssistant(getState /*: any*/, getRecoveryState) {
     return createAssistant({ getState });
   }
 }
+
+const Logo = () => {
+  return (
+     <div class="logo-container">
+        <img src={logo100} alt="Logo" class="logo"/>
+     </div>
+  );
+};
+
+const Input = () => {
+  const [inputValue, setInputValue] = useState('');
+
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+  };
+
+  const sendPostRequest = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/v1/answer/check', {
+        method: 'POST',
+        body: JSON.stringify( {
+          userAnswer: inputValue,
+          correctAnswer: TrueAnswer
+      } ),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        if(data.isCorrect){
+          alert("Правильный ответ");
+        }
+        else{
+          alert("Неправильный ответ. Попробуйте еще раз");
+        }
+        setInputValue(''); 
+      } else {
+        setInputValue('')
+      }
+    } catch (error) {
+      setInputValue('');
+    }
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      sendPostRequest();
+    }
+  };
+
+  return (
+    <div>
+      <input
+        type="text"
+        className="input-text"
+        placeholder="Введите ответ:"
+        value={inputValue}
+        onChange={handleInputChange}
+        onKeyDown={handleKeyPress}
+      />
+    </div>
+  );
+};
+
 
 export class App extends React.Component {
   constructor(props) {
@@ -254,10 +283,8 @@ export class App extends React.Component {
     return (
       <>
         <Logo></Logo>
-        {/* <Button></Button> */}
         <Input></Input>
         <InfoButton></InfoButton>
-        {/* <QuestionOutputArea></QuestionOutputArea> */}
         <ButtonOutputComponent></ButtonOutputComponent>
       </>
     );
