@@ -35,10 +35,6 @@ const InfoButton = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const closeMenu = () => {
-    setIsMenuOpen(false);
-  };
-
   return (
     <div className='container' onClick={toggleMenu}>
       <button class = "InfoButton">
@@ -192,9 +188,8 @@ export class App extends React.Component {
           title,
         })),
         ignored_words: [
-          'добавить','установить','запиши','поставь','закинь','напомнить', // addNote.sc
-          'удалить', 'удали',  // deleteNote.sc
-          'выполни', 'выполнил', 'сделал' // выполнил|сделал
+          'задать','задай','выдать','выдай','сгенерировать','сгенерируй','напечатать','напечатай','придумать','придумай','дать','дай', // askQuestion.sc
+          'мой ответ', 'ответ', 'правильный ответ'  // answer.sc
         ],
       },
     };
