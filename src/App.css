@@ -76,6 +76,62 @@ body {
   left:35%;
   height: 30vh;
   width: 30vw;
+}
+
+.InfoButton {
+  border: none;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  background:linear-gradient(to bottom, #44c767 5%, #5cbf2a 100%);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: .3s;
+  position: fixed;
+  top: 80px;
+  left: 65%;
+}
+
+.nfo {
+  width: 0px;
+  transition: .3s;
+  opacity: 0;
+}
+
+button:hover .nfo {
+  width: 20px;
+  transition: .3s;
+  opacity: 1;
+}
+
+.InfoButton:hover {
+  width: 90px;
+  transition: .3s;
+}
+
+.info-menu {
+  position: absolute;
+  top: 50px; /* Регулируем расстояние от кнопки до меню */
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  padding: 10px;
+  z-index: 999; /* Чтобы меню находилось выше других элементов */
+}
+
+.close-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+}
+
+.info-menu.active {
+  opacity: 1; /* Показываем меню с плавной анимацией */
+}
+
   overflow-wrap: break-word;
   overflow: overlay;
   box-sizing: border-box;
