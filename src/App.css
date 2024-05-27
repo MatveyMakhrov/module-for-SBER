@@ -28,55 +28,7 @@ body {
 	top:70%;
 }
 
-/* .input-text {
-  border:1px solid #18ab29;
-  background-color:rgba(13, 6, 6, 0.24);
-  border-radius:28px;
-  border:none;
-  position:fixed;
-  top:70%;
-  left:50%;
-  height: 55px;
-  width: 100px;
-  font-size:20px;
-  display: flex;
-}  */
 
-.output-text {
-  text-align: left;
-  background-color: rgba(0,0,0,0);
-  border:2px solid #18ab29;
-  border-radius: 2px;
-  color: #ffffff;
-  display: block;
-  padding: 10px;
-  font-size: 20px;
-  text-align: center;
-  position:fixed;
-  top:35%;
-  left:35%;
-  height: 30vh;
-  width: 30vw;
-  overflow-wrap: break-word;
-  overflow: overlay;
-  box-sizing: border-box;
-}
-
-.output-text::-webkit-scrollbar {
-  width: 10px;
-  background-color: rgba(0,0,0,0);
-}
-
-.output-text::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  background:linear-gradient(#44c767 5%, #5cbf2a 100%);
-}
-
-.output-text::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0);
-  border-radius: 10px;
-  background-color: rgba(0,0,0,0);
-}
 
 .logo-container {
   display: flex;
@@ -115,13 +67,20 @@ body {
   text-align: left;
   background-color: rgba(0,0,0,0);
   border:2px solid #18ab29;
-  border-radius: 28px;
+  border-radius: 10px;
   color: #ffffff;
+  display: block;
+  padding: 10px;
+  font-size: 20px;
+  text-align: center;
   position:fixed;
   top:35%;
   left:35%;
   height: 30vh;
   width: 30vw;
+  overflow-wrap: break-word;
+  overflow: overlay;
+  box-sizing: border-box;
 }
 
 .InfoButton {
@@ -176,4 +135,22 @@ button:hover .nfo {
 
 .info-menu.active {
   opacity: 1; /* Показываем меню с плавной анимацией */
+}
+
+  
+
+.output-text::-webkit-scrollbar {
+  width: 10px;
+  background-color: rgba(0,0,0,0);
+}
+
+.output-text::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background:linear-gradient(#44c767 5%, #5cbf2a 100%);
+}
+
+.output-text::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0);
+  border-radius: 10px;
+  background-color: rgba(0,0,0,0);
 }
