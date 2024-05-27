@@ -148,6 +148,9 @@ export class App extends React.Component {
         
         case 'read_answer':
           return this.read_answer(action);
+        
+        case 'say_answer':
+          return this.say_answer(action);
 
         default:
           throw new Error();
@@ -167,6 +170,10 @@ export class App extends React.Component {
       this.setState({backgroundColor: 'linear-gradient(135deg, #000000 2%,#9960b6 69%)'})
     });
     
+  }
+
+  say_answer(action){
+    this._send_action_value('voiceAns', TrueAnswer);
   }
 
   async read_answer(action) {
