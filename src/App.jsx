@@ -4,12 +4,14 @@ import logo100 from './res/logo100-transformed.png';
 import './App.css';
 
 let TrueAnswer = '';
-
+let question = '';
 async function fetchQuestionAndSetState(callback) {
+  //this.state = ({backgroundColor: 'linear-gradient(135deg, #000000 2%,#9960b6 69%)'})
   try {
     let response = await fetch('https://4-gk.ru/api/v1/question/random');
     let data = await response.json();
     TrueAnswer = data.question.answer;
+    question = data.question.text;
     callback(data.question.text);
   } catch (error) {
     console.error('Error fetching question:', error);
@@ -18,6 +20,7 @@ async function fetchQuestionAndSetState(callback) {
 }
 
 function ButtonOutputComponent({ onClick }) {
+ 
   return (
     <div>
       <button className="QuestionButton" onClick={onClick}>Выдай вопрос</button>
@@ -154,13 +157,16 @@ export class App extends React.Component {
 
   add_question(action) {
     console.log('add_question', action);
+    
     fetchQuestionAndSetState((text) => {
+      this._send_action_value('voice', question);
       this.setState({ 
         outputText: text,
-        background: 'linear-gradient(135deg, #000000 2%,#9960b6 69%)' // Reset to initial gradient
+        background: 'linear-gradient(135deg, #000000 2%,#9960b6 69%)' 
       });
       this.setState({backgroundColor: 'linear-gradient(135deg, #000000 2%,#9960b6 69%)'})
     });
+    
   }
 
   async read_answer(action) {
@@ -206,12 +212,15 @@ export class App extends React.Component {
       if (response.ok) {
         const data = await response.json();
         if (data.isCorrect) {
-          alert('Правильный ответ');
-          this.setState({ backgroundColor: 'linear-gradient(135deg, #000000 2%, #11877e 69%)' }); // Green gradient for correct answer
-          this._send_action_value('done', 'Молодец');
+          this.setState({ backgroundColor: 'linear-gradient(135deg, #000000 2%, #11877e 69%)' });
+          //const trueAns = ['Вы молодец!', 'Так держать!'];
+          //const idxTrue = (Math.random() * trueAns.length) | 0; 
+          this._send_action_value('done', 'Вы молодец');
         } else {
-          alert('Неправильный ответ. Попробуйте еще раз');
-          this.setState({ backgroundColor: 'linear-gradient(135deg, #000000 2%,#b42c2c 69%)' }); // Red gradient for incorrect answer
+          this.setState({ backgroundColor: 'linear-gradient(135deg, #000000 2%,#b42c2c 69%)' });
+          //const wrong = ['Попробуйте еще раз', 'Не отчаивайтесь', 'У вас все получится'];
+          //const idx = (Math.random() * wrong.length) | 0;
+          this._send_action_value('wrongAns', 'Попробуйте еще раз');
         }
         this.setState({ inputValue: '' });
       } else {
