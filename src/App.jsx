@@ -75,6 +75,7 @@ export class App extends React.Component {
       notes: [{ id: Math.random().toString(36).substring(7), title: 'тест' }],
       outputText: '',
       inputValue: '',
+      backgroundColor: 'linear-gradient(135deg, #000000 2%,#9960b6 69%)' // Initial gradient
     };
 
     this.assistant = initializeAssistant(() => this.getStateForAssistant());
@@ -154,7 +155,11 @@ export class App extends React.Component {
   add_question(action) {
     console.log('add_question', action);
     fetchQuestionAndSetState((text) => {
-      this.setState({ outputText: text });
+      this.setState({ 
+        outputText: text,
+        background: 'linear-gradient(135deg, #000000 2%,#9960b6 69%)' // Reset to initial gradient
+      });
+      this.setState({backgroundColor: 'linear-gradient(135deg, #000000 2%,#9960b6 69%)'})
     });
   }
 
@@ -173,8 +178,10 @@ export class App extends React.Component {
         const data = await response.json();
         if (data.isCorrect) {
           alert('Правильный ответ');
+          this.setState({ backgroundColor: 'linear-gradient(to right, #00ff00, #00cc00)' });
         } else {
           alert('Неправильный ответ. Попробуйте еще раз');
+          this.setState({ backgroundColor: 'linear-gradient(135deg, #000000 2%,#b42c2c 69%)' }); 
         }
         this.setState({ inputValue: '' });
       } else {
@@ -200,9 +207,11 @@ export class App extends React.Component {
         const data = await response.json();
         if (data.isCorrect) {
           alert('Правильный ответ');
+          this.setState({ backgroundColor: 'linear-gradient(135deg, #000000 2%, #11877e 69%)' }); // Green gradient for correct answer
           this._send_action_value('done', 'Молодец');
         } else {
           alert('Неправильный ответ. Попробуйте еще раз');
+          this.setState({ backgroundColor: 'linear-gradient(135deg, #000000 2%,#b42c2c 69%)' }); // Red gradient for incorrect answer
         }
         this.setState({ inputValue: '' });
       } else {
@@ -254,8 +263,6 @@ export class App extends React.Component {
     }
   }
 
-  
-
   handleInputChange = (event) => {
     this.setState({ inputValue: event.target.value });
   };
@@ -268,8 +275,16 @@ export class App extends React.Component {
 
   render() {
     console.log('render');
+    const { backgroundColor } = this.state;
+    const containerStyle = {
+      background: backgroundColor,
+      height: '100vh',
+      padding: '20px',
+      transition: 'background 0.5s ease'
+    };
+
     return (
-      <>
+      <div style={containerStyle}>
         <Logo />
         <Input
           inputValue={this.state.inputValue}
@@ -278,7 +293,7 @@ export class App extends React.Component {
         />
         <ButtonOutputComponent onClick={() => fetchQuestionAndSetState((text) => this.setState({ outputText: text }))} />
         <div className="output-text">{this.state.outputText}</div>
-      </>
+      </div>
     );
   }
 }
