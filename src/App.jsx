@@ -1,68 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createAssistant, createSmartappDebugger } from '@salutejs/client';
 import logo100 from './res/logo100-transformed.png';
 import './App.css';
 
-let TrueAnswer = ''
-function ButtonOutputComponent() {
-  const [outputText, setOutputText] = useState('');
+let TrueAnswer = '';
 
-  const handleButtonClick = async () => {
-    try {
-      let response = await fetch('http://localhost:8080/api/v1/question/random');
-      let data = await response.json();
-      setOutputText(data.question.text);
-      TrueAnswer = data.question.answer;
-      //alert(TrueAnswer) 
-    } catch (error) {
-      console.error('Error fetching question:', error);
-      alert(error);
-    }
-  };
+async function fetchQuestionAndSetState(callback) {
+  try {
+    let response = await fetch('https://4-gk.ru/api/v1/question/random');
+    let data = await response.json();
+    TrueAnswer = data.question.answer;
+    callback(data.question.text);
+  } catch (error) {
+    console.error('Error fetching question:', error);
+    alert(error);
+  }
+}
 
+function ButtonOutputComponent({ onClick }) {
   return (
     <div>
-      <button href="#" className="QuestionButton" onClick={handleButtonClick}>Выдай вопрос</button>
-      <output className="output-text">{outputText}</output>
+      <button className="QuestionButton" onClick={onClick}>Выдай вопрос</button>
+      <output className="output-text">{onClick.outputText}</output>
     </div>
   );
 }
 
-const InfoButton = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  const closeMenu = () => {
-    setIsMenuOpen(false);
-  };
-
-  return (
-    <div className='container' onClick={toggleMenu}>
-      <button class = "InfoButton">
-    <span>i</span>
-    <span class="nfo">NFO</span>
-    </button>
-
-    {isMenuOpen && (
-        <div className="info-menu">
-          <span className="close-button" onClick={closeMenu}>X</span>
-          <p>Help info test</p>
-          {/* Add more information here */}
-        </div>
-      )}
-    </div>
-  );
-};
-function initializeAssistant(getState /*: any*/, getRecoveryState) {
+function initializeAssistant(getState, getRecoveryState) {
   if (process.env.NODE_ENV === 'development') {
     return createSmartappDebugger({
       token: process.env.REACT_APP_TOKEN ?? '',
       initPhrase: `Запусти ${process.env.REACT_APP_SMARTAPP}`,
       getState,
-      // getRecoveryState: getState,                                           
       nativePanel: {
         defaultText: 'Я Вас слушаю',
         screenshotMode: false,
@@ -76,51 +45,13 @@ function initializeAssistant(getState /*: any*/, getRecoveryState) {
 
 const Logo = () => {
   return (
-     <div class="logo-container">
-        <img src={logo100} alt="Logo" class="logo"/>
-     </div>
+    <div className="logo-container">
+      <img src={logo100} alt="Logo" className="logo" />
+    </div>
   );
 };
 
-const Input = () => {
-  const [inputValue, setInputValue] = useState('');
-
-  const handleInputChange = (event) => {
-    setInputValue(event.target.value);
-  };
-
-  const sendPostRequest = async () => {
-    try {
-      const response = await fetch('http://localhost:8080/api/v1/answer/check', {
-        method: 'POST',
-        body: JSON.stringify( {
-          userAnswer: inputValue,
-          correctAnswer: TrueAnswer
-      } ),
-      });
-      if (response.ok) {
-        const data = await response.json();
-        if(data.isCorrect){
-          alert("Правильный ответ");
-        }
-        else{
-          alert("Неправильный ответ. Попробуйте еще раз");
-        }
-        setInputValue(''); 
-      } else {
-        setInputValue('')
-      }
-    } catch (error) {
-      setInputValue('');
-    }
-  };
-
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      sendPostRequest();
-    }
-  };
-
+const Input = ({ inputValue, handleInputChange, handleKeyPress }) => {
   return (
     <div>
       <input
@@ -135,7 +66,6 @@ const Input = () => {
   );
 };
 
-
 export class App extends React.Component {
   constructor(props) {
     super(props);
@@ -143,16 +73,18 @@ export class App extends React.Component {
 
     this.state = {
       notes: [{ id: Math.random().toString(36).substring(7), title: 'тест' }],
+      outputText: '',
+      inputValue: '',
     };
 
     this.assistant = initializeAssistant(() => this.getStateForAssistant());
 
-    this.assistant.on('data', (event /*: any*/) => {
-      console.log(`assistant.on(data)`, event);
+    this.assistant.on('data', (event) => {
+      console.log('assistant.on(data)', event);
       if (event.type === 'character') {
         console.log(`assistant.on(data): character: "${event?.character?.id}"`);
       } else if (event.type === 'insets') {
-        console.log(`assistant.on(data): insets`);
+        console.log('assistant.on(data): insets');
       } else {
         const { action } = event;
         this.dispatchAssistantAction(action);
@@ -161,20 +93,19 @@ export class App extends React.Component {
 
     this.assistant.on('start', (event) => {
       let initialData = this.assistant.getInitialData();
-
-      console.log(`assistant.on(start)`, event, initialData);
+      console.log('assistant.on(start)', event, initialData);
     });
 
     this.assistant.on('command', (event) => {
-      console.log(`assistant.on(command)`, event);
+      console.log('assistant.on(command)', event);
     });
 
     this.assistant.on('error', (event) => {
-      console.log(`assistant.on(error)`, event);
+      console.log('assistant.on(error)', event);
     });
 
     this.assistant.on('tts', (event) => {
-      console.log(`assistant.on(tts)`, event);
+      console.log('assistant.on(tts)', event);
     });
   }
 
@@ -192,9 +123,8 @@ export class App extends React.Component {
           title,
         })),
         ignored_words: [
-          'добавить','установить','запиши','поставь','закинь','напомнить', // addNote.sc
-          'удалить', 'удали',  // deleteNote.sc
-          'выполни', 'выполнил', 'сделал' // выполнил|сделал
+          'задать', 'задай', 'выдать', 'выдай', 'сгенерировать', 'сгенерируй', 'напечатать', 'напечатай', 'придумать', 'придумай', 'дать', 'дай', // askQuestion.sc
+          'мой ответ', 'ответ', 'правильный ответ' // answer.sc
         ],
       },
     };
@@ -206,18 +136,80 @@ export class App extends React.Component {
     console.log('dispatchAssistantAction', action);
     if (action) {
       switch (action.type) {
-        case 'add_note':
-          return this.add_note(action);
+        case 'add_question':
+          return this.add_question(action);
 
-        case 'done_note':
-          return this.done_note(action);
-
-        case 'delete_note':
-          return this.delete_note(action);
+        case 'check_answer':
+          return this.check_answer(action);
+        
+        case 'read_answer':
+          return this.read_answer(action);
 
         default:
           throw new Error();
       }
+    }
+  }
+
+  add_question(action) {
+    console.log('add_question', action);
+    fetchQuestionAndSetState((text) => {
+      this.setState({ outputText: text });
+    });
+  }
+
+  async read_answer(action) {
+    console.log('read_answer', action);
+    const { inputValue } = this.state;
+    try {
+      const response = await fetch('https://4-gk.ru/api/v1/answer/check', {
+        method: 'POST',
+        body: JSON.stringify({
+          userAnswer: inputValue,
+          correctAnswer: TrueAnswer,
+        }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        if (data.isCorrect) {
+          alert('Правильный ответ');
+        } else {
+          alert('Неправильный ответ. Попробуйте еще раз');
+        }
+        this.setState({ inputValue: '' });
+      } else {
+        this.setState({ inputValue: '' });
+      }
+    } catch (error) {
+      this.setState({ inputValue: '' });
+    }
+  }
+
+  async check_answer(action) {
+    console.log('check_answer', action);
+    const userAnswer = action.note || this.state.inputValue;
+    try {
+      const response = await fetch('https://4-gk.ru/api/v1/answer/check', {
+        method: 'POST',
+        body: JSON.stringify({
+          userAnswer: userAnswer,
+          correctAnswer: TrueAnswer,
+        }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        if (data.isCorrect) {
+          alert('Правильный ответ');
+          this._send_action_value('done', 'Молодец');
+        } else {
+          alert('Неправильный ответ. Попробуйте еще раз');
+        }
+        this.setState({ inputValue: '' });
+      } else {
+        this.setState({ inputValue: '' });
+      }
+    } catch (error) {
+      this.setState({ inputValue: '' });
     }
   }
 
@@ -232,15 +224,6 @@ export class App extends React.Component {
           completed: false,
         },
       ],
-    });
-  }
-
-  done_note(action) {
-    console.log('done_note', action);
-    this.setState({
-      notes: this.state.notes.map((note) =>
-        note.id === action.id ? { ...note, completed: !note.completed } : note
-      ),
     });
   }
 
@@ -271,21 +254,30 @@ export class App extends React.Component {
     }
   }
 
-  delete_note(action) {
-    console.log('delete_note', action);
-    this.setState({
-      notes: this.state.notes.filter(({ id }) => id !== action.id),
-    });
-  }
+  
+
+  handleInputChange = (event) => {
+    this.setState({ inputValue: event.target.value });
+  };
+
+  handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      this.check_answer({ note: this.state.inputValue });
+    }
+  };
 
   render() {
     console.log('render');
     return (
       <>
-        <Logo></Logo>
-        <Input></Input>
-        <InfoButton></InfoButton>
-        <ButtonOutputComponent></ButtonOutputComponent>
+        <Logo />
+        <Input
+          inputValue={this.state.inputValue}
+          handleInputChange={this.handleInputChange}
+          handleKeyPress={this.handleKeyPress}
+        />
+        <ButtonOutputComponent onClick={() => fetchQuestionAndSetState((text) => this.setState({ outputText: text }))} />
+        <div className="output-text">{this.state.outputText}</div>
       </>
     );
   }
