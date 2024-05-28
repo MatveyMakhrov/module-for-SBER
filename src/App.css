@@ -1,5 +1,20 @@
+/* body {
+  background-repeat: no-repeat;
+  background: linear-gradient(135deg, #000000 2%,#11877e 69%);
+  background: linear-gradient(135deg, #000000 2%,#9932CC 69%);
+} */
+
 body {
   background: linear-gradient(135deg, #000000 2%,#11877e 69%);
+  -webkit-animation: random 10s infinite;
+  animation: random 30s infinite;
+}
+@keyframes  random {
+ 10% { background: linear-gradient(135deg, #000000 2%,#11877e 69%); } 
+ 30% { background: linear-gradient(135deg, #000000 2%,#b42c2c 69%); } 
+ 45% { background: linear-gradient(135deg, #000000 2%,#9960b6 69%); } 
+ 60% { background: linear-gradient(135deg, #000000 2%,#20B2AA 69%); }
+ 75% { background: linear-gradient(135deg, #000000 2%,#FA8072 69%); }
 }
 
 .QuestionButton {
@@ -9,13 +24,13 @@ body {
 	border:1px solid #18ab29;
   position:fixed;
   top:70%;
-  left:31%;
+  left:30%;
 	cursor:pointer;
 	color:#ffffff;
 	font-family:Verdana;
 	font-size:20px;
   height: 8vh;
-  width: 18.3vw;
+  width: 13vw;
 	text-decoration:none;
 	text-shadow:0px -1px 8px #2f6627;
 }
@@ -24,6 +39,32 @@ body {
 	background-color:#5cbf2a;
 }
 .QuestionButton:active {
+	position:fixed;
+	top:70%;
+}
+
+.LoseButton {
+	background:linear-gradient(to bottom, #fc8d83 5%, #e4685d 100%);
+	background-color:#fe1a00;
+	border-radius:28px;
+	border:2px solid #d83526;
+  position:fixed;
+  top:70%;
+  left:43.5%;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Verdana;
+	font-size:20px;
+  height: 8vh;
+  width: 13vw;
+	text-decoration:none;
+	text-shadow:0px -1px 8px #b23e35;
+}
+.LoseButton:hover {
+	background:linear-gradient(to bottom, #ce0100 5%, #fe1a00 100%);
+	background-color:#5cbf2a;
+}
+.LoseButton:active {
 	position:fixed;
 	top:70%;
 }
@@ -50,9 +91,9 @@ body {
   color: #ffffff;
   position:fixed;
   top:70%;
-  left:51%;
+  left:57%;
   height: 8vh;
-  width: 18.3vw;
+  width: 13vw;
   border-style: solid;
   border-radius: 28px;
 }
@@ -76,6 +117,26 @@ body {
   left:35%;
   height: 30vh;
   width: 30vw;
+  overflow-wrap: break-word;
+  overflow: overlay;
+  box-sizing: border-box;
+}
+
+
+.output-text::-webkit-scrollbar {
+  width: 10px;
+  background-color: rgba(0,0,0,0);
+}
+
+.output-text::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background:linear-gradient(#44c767 5%, #5cbf2a 100%);
+}
+
+.output-text::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0);
+  border-radius: 10px;
+  background-color: rgba(0,0,0,0);
 }
 
 .InfoButton {
@@ -114,8 +175,13 @@ button:hover .nfo {
 
 .info-menu {
   position: absolute;
-  top: 50px; /* Регулируем расстояние от кнопки до меню */
-  background-color: #ffffff;
+  border-radius: 20px;
+  width: 20vw;
+  height: 60vh;
+  top: 15%; /* Регулируем расстояние от кнопки до меню */
+  left: 75%;
+  background-color: rgba(0,0,0,0.4);
+  color: #fff;
   border: 1px solid #cccccc;
   padding: 10px;
   z-index: 999; /* Чтобы меню находилось выше других элементов */
@@ -132,23 +198,45 @@ button:hover .nfo {
   opacity: 1; /* Показываем меню с плавной анимацией */
 }
 
-  overflow-wrap: break-word;
-  overflow: overlay;
-  box-sizing: border-box;
-}
+/* /* .modal {
+  display: none; /* скрыт по умолчанию */
+  /* темный фон при открытии модалки должен быть на всю страницу */ 
+  /*position: fixed; 
+  z-index: 1; /* поверх всех элементов */
+  /*left: 0;
+  top: 0;
+  width: 100vw; /* полная ширина */
+ /* height: 100vh; /* полная высота */
+  /*background-color: rgba(0,0,0,0.4); /* цвет фона - прозрачный черный */
+/*} */
 
-.output-text::-webkit-scrollbar {
-  width: 10px;
+
+/* .modal-content {
   background-color: rgba(0,0,0,0);
+  margin: 15% auto; /* 15% отступ сверху и снизу, чтобы выровнять в центре */
+  /*padding: 20px;
+  border: 1px solid;
+  width: 100%;
+} */
+
+/* .close-button {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+} */
+
+/* .close-button:hover,
+.close-button:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+} */
+
+.selected {
+  border: 2px solid red; /* стиль для выбранной кнопки */
 }
 
-.output-text::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  background:linear-gradient(#44c767 5%, #5cbf2a 100%);
-}
-
-.output-text::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0);
-  border-radius: 10px;
-  background-color: rgba(0,0,0,0);
+h3 {
+  text-align: center;
 }

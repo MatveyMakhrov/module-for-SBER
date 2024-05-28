@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createAssistant, createSmartappDebugger } from '@salutejs/client';
 import logo100 from './res/logo100-transformed.png';
 import './App.css';
@@ -22,7 +22,7 @@ function ButtonOutputComponent() {
 
   return (
     <div>
-      <button href="#" className="QuestionButton" onClick={handleButtonClick}>Выдай вопрос</button>
+      <button href="#" id="button1" className="QuestionButton" onClick={handleButtonClick}>Выдай вопрос</button>
       <output className="output-text">{outputText}</output>
     </div>
   );
@@ -35,23 +35,43 @@ const InfoButton = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
     <div className='container' onClick={toggleMenu}>
-      <button class = "InfoButton">
+      <button id="button2" class = "InfoButton">
     <span>i</span>
     <span class="nfo">NFO</span>
     </button>
 
     {isMenuOpen && (
         <div className="info-menu">
-          <span className="close-button" onClick={closeMenu}>X</span>
-          <p>Help info test</p>
+             <h3>Информация по игре</h3>
+          <h5>Инструкция по клавишам</h5>
+          <ul>
+            <li>клавиша "вверх": Инструкция по игре</li>
+            <li>клавиша "вправо": Выдать вопрос</li>
+            <li>клавиша "влево": Введите ответ</li>
+            <li>клавиша "вниз": Сдаться</li>
+          </ul>
+          <span className="close-button" onClick={closeMenu}>✘</span>
           {/* Add more information here */}
         </div>
       )}
     </div>
   );
 };
+
+const LoseButton = () => {
+  return (
+    <div>
+      <button href="#" id="button3" className="LoseButton" onClick={alert('В следующий раз получится')}>Сдаться</button>
+    </div>
+  );
+}
+
 function initializeAssistant(getState /*: any*/, getRecoveryState) {
   if (process.env.NODE_ENV === 'development') {
     return createSmartappDebugger({
@@ -120,6 +140,7 @@ const Input = () => {
   return (
     <div>
       <input
+        id="input1"
         type="text"
         className="input-text"
         placeholder="Введите ответ:"
@@ -131,6 +152,44 @@ const Input = () => {
   );
 };
 
+window.addEventListener('DOMContentLoaded', (event) => {
+  const buttonElement = document.getElementById('input1');
+  const buttonElement2 = document.getElementById('button2');
+  // Проверка, существует ли элемент кнопки
+  if (buttonElement) {
+    // Добавление обработчика события нажатия на кнопку
+    buttonElement.addEventListener('click', function() {
+        console.log('Кнопка была нажата');
+        // Ваша логика обработки нажатия кнопки
+    });
+  } else {
+    console.error('Элемент кнопки не найден');
+  }
+
+  window.addEventListener('keydown', (event) => {
+    switch(event.code) {
+      case 'ArrowDown':
+        // вниз
+        document.getElementById('button3').click();
+        break;
+      case 'ArrowUp':
+        // вверх
+        document.getElementById('button2').click();
+        break;
+      case 'ArrowLeft':
+        // влево
+        document.getElementById('button1').click();
+        break;
+      case 'ArrowRight':
+        // вправо
+        document.getElementById('input1').focus();
+        break;
+      case 'Enter':
+        // ок
+      break;
+    }
+  });
+});
 
 export class App extends React.Component {
   constructor(props) {
@@ -280,6 +339,7 @@ export class App extends React.Component {
         <Logo></Logo>
         <Input></Input>
         <InfoButton></InfoButton>
+        <LoseButton></LoseButton>
         <ButtonOutputComponent></ButtonOutputComponent>
       </>
     );
