@@ -86,7 +86,7 @@ body {
   padding: 5px;
   font-size: 20px;
   text-align: center;
-  background-color: rgba(0,0,0,0);
+  background-color: rgba(0,0,0,0.1);
   border:2px solid #18ab29;
   color: #ffffff;
   position:fixed;
@@ -101,10 +101,14 @@ body {
 .input-text::placeholder {
   color:#ffffff;
 }
+.input-text:focus::-webkit-input-placeholder { color:transparent; }
+.input-text:focus:-moz-placeholder { color:transparent; } /* FF 4-18 */
+.input-text:focus::-moz-placeholder { color:transparent; } /* FF 19+ */
+.input-text:focus:-ms-input-placeholder { color:transparent; } /* IE 10+ */
 
 .output-text {
   text-align: left;
-  background-color: rgba(0,0,0,0);
+  background-color: rgba(0,0,0,0.1);
   border:2px solid #18ab29;
   border-radius: 10px;
   color: #ffffff;
