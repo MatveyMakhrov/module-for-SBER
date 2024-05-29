@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { createRef, forwardRef, useRef, useState } from 'react';
 import { createAssistant, createSmartappDebugger } from '@salutejs/client';
-import { useSpatnavInitialization } from '@salutejs/spatial';
+import styled from "styled-components";
 import logo100 from './res/logo100-transformed.png';
-import '././pages/Page.jsx'
 import './App.css';
 
 let TrueAnswer = '';
@@ -21,15 +20,26 @@ async function fetchQuestionAndSetState(callback) {
   }
 }
 
-function ButtonOutputComponent({ onClick }) {
- 
-  return (
-    <div>
-      <button className="QuestionButton" onClick={onClick}>Выдай вопрос</button>
-      <output className="output-text">{onClick.outputText}</output>
-    </div>
-  );
-}
+const StyledButtonOutputComponentGreen = styled.button `border:2px solid #18ab29;`;
+const StyledButtonOutputComponentRed = styled.button `border:2px solid red;`;
+
+const ButtonOutputComponent = forwardRef(({ onClick, pos_x, pos_y }, ref) => {
+  if (pos_x === 0 && pos_y === 0) {
+    return (
+      <div>
+        <StyledButtonOutputComponentRed className="QuestionButton" onClick={onClick} ref={pos_x === 0 ? ref : null}>Выдай вопрос</StyledButtonOutputComponentRed>
+        <output className="output-text">{onClick.outputText}</output>
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <StyledButtonOutputComponentGreen className="QuestionButton" onClick={onClick} ref={pos_x === 0 ? ref : null}>Выдай вопрос</StyledButtonOutputComponentGreen>
+        <output className="output-text">{onClick.outputText}</output>
+      </div>
+    );
+  }
+});
 
 function initializeAssistant(getState, getRecoveryState) {
   if (process.env.NODE_ENV === 'development') {
@@ -56,22 +66,47 @@ const Logo = () => {
   );
 };
 
-const Input = ({ inputValue, handleInputChange, handleKeyPress, }) => {
-  return (
-    <div>
-      <input
-        id="input-text"
-        type="text"
-        className="input-text"
-        placeholder="Введите ответ:"
-        value={inputValue}
-        onChange={handleInputChange}
-        onKeyDown={handleKeyPress}
-      />
-    </div>
-  );
-};
-const InfoButton = () => {
+const StyledInputGreen = styled.input `border:2px solid #18ab29;`;
+const StyledInputRed = styled.input `border:2px solid red;`;
+
+const Input = forwardRef(({ inputValue, handleInputChange, handleKeyPress, pos_x, pos_y}, ref) => {
+  if (pos_x === 2 && pos_y === 0) {
+    return (
+      <div>
+        <StyledInputRed
+          id="input-text"
+          type="text"
+          className="input-text"
+          placeholder="Введите ответ:"
+          value={inputValue}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyPress}
+          ref={pos_x === 2 ? ref : null}
+        />
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <StyledInputGreen
+          id="input-text"
+          type="text"
+          className="input-text"
+          placeholder="Введите ответ:"
+          value={inputValue}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyPress}
+          ref={pos_x === 2 ? ref : null}
+        />
+      </div>
+    );
+  }
+}
+);
+const StyledInfoButtonGreen = styled.button `border:2px solid #18ab29;`;
+const StyledInfoButtonRed = styled.button `border:2px solid red;`;
+
+const InfoButton = forwardRef(( { pos_x, pos_y }, ref ) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -82,39 +117,114 @@ const InfoButton = () => {
     setIsMenuOpen(false);
   };
 
-  return (
-    <div className='container' onClick={toggleMenu}>
-      <button id="button2" class = "InfoButton">
-    <span>i</span>
-    <span class="nfo">NFO</span>
-    </button>
+  if (pos_y === 1) {
+    return (
+      <div className='container' onClick={toggleMenu}>
+        <StyledInfoButtonRed id="button2" className = "InfoButton" ref={pos_y === 1 ? ref : null}>
+      <span>i</span>
+      <span class="nfo">NFO</span>
+      </StyledInfoButtonRed>
+  
+      {isMenuOpen && (
+          <div className="info-menu">
+            <span className="close-button" onClick={closeMenu}>✘</span>
+            <p>Help info test</p>
+            {/* Add more information here */}
+          </div>
+        )}
+      </div>
+    );
+  } else {
+    return (
+      <div className='container' onClick={toggleMenu}>
+        <StyledInfoButtonGreen id="button2" className = "InfoButton" ref={pos_y === 1 ? ref : null}>
+      <span>i</span>
+      <span class="nfo">NFO</span>
+      </StyledInfoButtonGreen>
+  
+      {isMenuOpen && (
+          <div className="info-menu">
+            <span className="close-button" onClick={closeMenu}>✘</span>
+            <p>Help info test</p>
+            {/* Add more information here */}
+          </div>
+        )}
+      </div>
+    );
+  }
+});
 
-    {isMenuOpen && (
-        <div className="info-menu">
-          <span className="close-button" onClick={closeMenu}>✘</span>
-          <p>Help info test</p>
-          {/* Add more information here */}
-        </div>
-      )}
+const StyledLoseButtonGreen = styled.button `border:2px solid #18ab29;`;
+const StyledLoseButtonRed = styled.button `border:2px solid red;`;
+
+const LoseButton = forwardRef(( { pos_x, pos_y }, ref ) => {
+  if (pos_x === 1 && pos_y === 0) {
+    return (
+      <div>
+      <StyledLoseButtonGreen href="#" id="button3" className="LoseButton" ref={pos_x === 1 ? ref : null}>Сдаться</StyledLoseButtonGreen>
     </div>
-  );
-};
-
-const LoseButton = () => {
+    );
+  } else {
   return (
     <div>
-      <button href="#" id="button3" className="LoseButton">Сдаться</button>
+      <StyledLoseButtonRed href="#" id="button3" className="LoseButton" ref={pos_x === 1 ? ref : null}>Сдаться</StyledLoseButtonRed>
     </div>
   );
-}
-
+  }
+});
 
 export class App extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      pos_x : 0,
+      pos_y : 0
+    }
+    this.anyButton = createRef();
+    window.addEventListener('keydown', (event) => {
+      const new_state = this.state;
+      switch(event.code) {
+        case 'ArrowDown':
+          // вниз
+          if (new_state.pos_y > 0) {
+            new_state.pos_y -= 1;
+          }
+          break;
+         case 'ArrowUp':
+          // вверх
+          if (new_state.pos_y < 1) {
+            new_state.pos_y += 1;
+          }
+          break;
+         case 'ArrowLeft':
+          // влево
+          if (new_state.pos_x > 0) {
+            new_state.pos_x -= 1;
+          }
+          break;
+         case 'ArrowRight':
+          // вправо
+          if (new_state.pos_x < 2) {
+            new_state.pos_x += 1;
+          }
+          break;
+         case 'Enter':
+          // ок
+          if (this.anyButton != null && this.anyButton.current != null) {
+            this.anyButton.current.focus();
+            console.log(this.anyButton);
+          }
+         break;
+      }
+      this.setState(new_state);
+      console.log(new_state.pos_x);
+      console.log(new_state.pos_y);
+    });
     console.log('constructor');
 
     this.state = {
+      pos_x: 0,
+      pos_y: 0,
       notes: [{ id: Math.random().toString(36).substring(7), title: 'тест' }],
       outputText: '',
       inputValue: '',
@@ -328,36 +438,7 @@ export class App extends React.Component {
       this.check_answer({ note: this.state.inputValue });
     }
   };
-
-  remoteController = () => {
-    useSpatnavInitialization();
-    window.addEventListener('keydown', (event) => {
-      switch(event.code) {
-        case 'ArrowDown':
-          // вниз
-          Page();
-          break;
-         case 'ArrowUp':
-          // вверх
-          Page();
-          alert('Hello')
-          break;
-         case 'ArrowLeft':
-          // влево
-          Page();
-          break;
-         case 'ArrowRight':
-          // вправо
-          Page();
-          break;
-         case 'Enter':
-          // ок
-         break;
-      }
-    });
-    return <Page />;
-  };
-
+  
   render() {
     console.log('render');
     const { backgroundColor } = this.state;
@@ -372,14 +453,29 @@ export class App extends React.Component {
       <div style={containerStyle}>
         <Logo />
         <Input
+          pos_x={this.state.pos_x}
+          pos_y={this.state.pos_y}
+          ref={this.anyButton} 
           inputValue={this.state.inputValue}
           handleInputChange={this.handleInputChange}
           handleKeyPress={this.handleKeyPress}
         />
-        <InfoButton/>
-        <LoseButton/>
-        <Page/>
-        <ButtonOutputComponent onClick={() => fetchQuestionAndSetState((text) => this.setState({ outputText: text }))} />
+        <InfoButton
+          pos_x={this.state.pos_x}
+          pos_y={this.state.pos_y}
+          ref={this.anyButton}
+        />
+        <LoseButton
+          pos_x={this.state.pos_x}
+          pos_y={this.state.pos_y}
+          ref={this.anyButton}
+        />
+        <ButtonOutputComponent 
+        onClick={() => fetchQuestionAndSetState((text) => this.setState({ outputText: text }))}
+        pos_x={this.state.pos_x}
+        pos_y={this.state.pos_y}
+        ref={this.anyButton}
+        />
         <div className="output-text">{this.state.outputText}</div>
       </div>
     );
