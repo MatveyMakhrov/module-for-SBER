@@ -34,12 +34,12 @@ input:focus {
 
 .LoseButton {
 	background:linear-gradient(to bottom, #fc8d83 5%, #e4685d 100%);
-	background-color:#fe1a00;
+	/* background-color:#fe1a00; */
 	border-radius:28px;
-	border:2px solid #d83526;
+	/* border:2px solid #d83526; */
   position:fixed;
   top:70%;
-  left:43.5%;
+  left:57%;
 	cursor:pointer;
 	color:#ffffff;
 	font-family:Verdana;
@@ -80,7 +80,7 @@ input:focus {
   color: #ffffff;
   position:fixed;
   top:70%;
-  left:57%;
+  left:43.5%;
   height: 8vh;
   width: 13vw;
   border-style: solid;
