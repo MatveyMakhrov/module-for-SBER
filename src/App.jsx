@@ -4,7 +4,7 @@ import styled from "styled-components";
 import logo100 from './res/logo100-transformed.png';
 import './App.css';
 
-let TrueAnswer = '';
+let TrueAnswer = 'test';
 let question = '';
 async function fetchQuestionAndSetState(callback) {
   //this.state = ({backgroundColor: 'linear-gradient(135deg, #000000 2%,#9960b6 69%)'})
@@ -20,21 +20,21 @@ async function fetchQuestionAndSetState(callback) {
   }
 }
 
-const StyledButtonOutputComponentGreen = styled.button `border:2px solid #18ab29;`;
-const StyledButtonOutputComponentRed = styled.button `border:2px solid red;`;
+const StyledButtonOutputComponentGreen = styled.button `border:3px solid #18ab29;`;
+const StyledButtonOutputComponentRed = styled.button `border:3px solid red;`;
 
 const ButtonOutputComponent = forwardRef(({ onClick, pos_x, pos_y }, ref) => {
   if (pos_x === 0 && pos_y === 0) {
     return (
       <div>
-        <StyledButtonOutputComponentRed className="QuestionButton" onClick={onClick} ref={pos_x === 0 ? ref : null}>Выдай вопрос</StyledButtonOutputComponentRed>
+        <StyledButtonOutputComponentRed className="QuestionButton" onClick={onClick} ref={(pos_x === 0 && pos_y === 0) ? ref : null}>Выдай вопрос</StyledButtonOutputComponentRed>
         <output className="output-text">{onClick.outputText}</output>
       </div>
     );
   } else {
     return (
       <div>
-        <StyledButtonOutputComponentGreen className="QuestionButton" onClick={onClick} ref={pos_x === 0 ? ref : null}>Выдай вопрос</StyledButtonOutputComponentGreen>
+        <StyledButtonOutputComponentGreen className="QuestionButton" onClick={onClick} ref={(pos_x === 0 && pos_y === 0) ? ref : null}>Выдай вопрос</StyledButtonOutputComponentGreen>
         <output className="output-text">{onClick.outputText}</output>
       </div>
     );
@@ -66,22 +66,22 @@ const Logo = () => {
   );
 };
 
-const StyledInputGreen = styled.input `border:2px solid #18ab29;`;
-const StyledInputRed = styled.input `border:2px solid red;`;
+const StyledInputGreen = styled.input `border:3px solid #18ab29;`;
+const StyledInputRed = styled.input `border:3px solid red;`;
 
 const Input = forwardRef(({ inputValue, handleInputChange, handleKeyPress, pos_x, pos_y}, ref) => {
-  if (pos_x === 2 && pos_y === 0) {
+  if (pos_x === 1 && pos_y === 0) {
     return (
       <div>
         <StyledInputRed
           id="input-text"
           type="text"
           className="input-text"
-          placeholder="Введите ответ:"
+          placeholder="Введи ответ:"
           value={inputValue}
           onChange={handleInputChange}
           onKeyDown={handleKeyPress}
-          ref={pos_x === 2 ? ref : null}
+          ref={pos_x === 1 ? ref : null}
         />
       </div>
     );
@@ -92,21 +92,21 @@ const Input = forwardRef(({ inputValue, handleInputChange, handleKeyPress, pos_x
           id="input-text"
           type="text"
           className="input-text"
-          placeholder="Введите ответ:"
+          placeholder="Введи ответ:"
           value={inputValue}
           onChange={handleInputChange}
           onKeyDown={handleKeyPress}
-          ref={pos_x === 2 ? ref : null}
+          ref={pos_x === 1 ? ref : null}
         />
       </div>
     );
   }
 }
 );
-const StyledInfoButtonGreen = styled.button `border:2px solid #18ab29;`;
-const StyledInfoButtonRed = styled.button `border:2px solid red;`;
+const StyledInfoButtonGreen = styled.button `border:3px solid #18ab29;`;
+const StyledInfoButtonRed = styled.button `border:3px solid red;`;
 
-const InfoButton = forwardRef(( { pos_x, pos_y }, ref ) => {
+const InfoButton = forwardRef(( { pos_y }, ref ) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -154,20 +154,20 @@ const InfoButton = forwardRef(( { pos_x, pos_y }, ref ) => {
   }
 });
 
-const StyledLoseButtonGreen = styled.button `border:2px solid #18ab29;`;
-const StyledLoseButtonRed = styled.button `border:2px solid red;`;
+const StyledLoseButtonGreen = styled.button `border:3px solid #18ab29;`;
+const StyledLoseButtonRed = styled.button `border:3px solid red;`;
 
 const LoseButton = forwardRef(( { pos_x, pos_y }, ref ) => {
-  if (pos_x === 1 && pos_y === 0) {
+  if (pos_x === 2 && pos_y === 0) {
     return (
       <div>
-      <StyledLoseButtonGreen href="#" id="button3" className="LoseButton" ref={pos_x === 1 ? ref : null}>Сдаться</StyledLoseButtonGreen>
+      <StyledLoseButtonRed href="#" id="button3" className="LoseButton" ref={(pos_x === 2 && pos_y === 0) ? ref : null}>Сдаться</StyledLoseButtonRed>
     </div>
     );
   } else {
   return (
     <div>
-      <StyledLoseButtonRed href="#" id="button3" className="LoseButton" ref={pos_x === 1 ? ref : null}>Сдаться</StyledLoseButtonRed>
+      <StyledLoseButtonGreen href="#" id="button3" className="LoseButton" ref={(pos_x === 2 && pos_y === 0) ? ref : null}>Сдаться</StyledLoseButtonGreen>
     </div>
   );
   }
