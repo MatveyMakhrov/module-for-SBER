@@ -157,17 +157,17 @@ const InfoButton = forwardRef(( { pos_y }, ref ) => {
 const StyledLoseButtonGreen = styled.button `border:3px solid #18ab29;`;
 const StyledLoseButtonRed = styled.button `border:3px solid red;`;
 
-const LoseButton = forwardRef(( { pos_x, pos_y }, ref ) => {
+const LoseButton = forwardRef(( { pos_x, pos_y, handleLoseClick }, ref ) => {
   if (pos_x === 2 && pos_y === 0) {
     return (
       <div>
-      <StyledLoseButtonRed href="#" id="button3" className="LoseButton" ref={(pos_x === 2 && pos_y === 0) ? ref : null}>Сдаться</StyledLoseButtonRed>
+      <StyledLoseButtonRed href="#" id="button3" className="LoseButton" ref={(pos_x === 2 && pos_y === 0) ? ref : null}onClick={handleLoseClick}>Сдаться</StyledLoseButtonRed>
     </div>
     );
   } else {
   return (
     <div>
-      <StyledLoseButtonGreen href="#" id="button3" className="LoseButton" ref={(pos_x === 2 && pos_y === 0) ? ref : null}>Сдаться</StyledLoseButtonGreen>
+      <StyledLoseButtonGreen href="#" id="button3" className="LoseButton" ref={(pos_x === 2 && pos_y === 0) ? ref : null}onClick={handleLoseClick}>Сдаться</StyledLoseButtonGreen>
     </div>
   );
   }
@@ -469,12 +469,14 @@ export class App extends React.Component {
           pos_x={this.state.pos_x}
           pos_y={this.state.pos_y}
           ref={this.anyButton}
+          handleLoseClick = {() => this.say_answer()}
         />
         <ButtonOutputComponent 
         onClick={() => fetchQuestionAndSetState((text) => this.setState({ outputText: text }))}
         pos_x={this.state.pos_x}
         pos_y={this.state.pos_y}
         ref={this.anyButton}
+        
         />
         <div className="output-text">{this.state.outputText}</div>
       </div>
