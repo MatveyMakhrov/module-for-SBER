@@ -20,7 +20,7 @@ input:focus {
   top:70%;
   left:43.5%;
   height: 8vh;
-  width: 13vw;
+  width: 15vw;
   
 }
 
@@ -159,6 +159,12 @@ input:focus {
   -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0);
   border-radius: 10px;
   background-color: rgba(0,0,0,0);
+}
+
+.saluteInfoButton{
+  position:fixed;
+  top:-230px;
+  left:65%;
 }
 
 .InfoButton {

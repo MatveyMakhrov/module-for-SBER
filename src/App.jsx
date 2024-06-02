@@ -8,10 +8,11 @@ import './App.css';
 import {
     text, // Цвет текста
     background, // Цвет подложки
-    gradient, // Градиент
+    gradient
+    
 } from '@salutejs/plasma-tokens';
-import { Button, TextField, Container} from '@salutejs/plasma-ui'
-import { IconDownload, IconPlusCircle } from '@salutejs/plasma-icons';
+import { Button, TextField, Container, Sheet, Body1} from '@salutejs/plasma-ui'
+import { IconDownload, IconPlusCircle, IconInfoCircleFill, IconInfo, IconCrossCircle } from '@salutejs/plasma-icons';
 
 
 const ThemeBackgroundEva = createGlobalStyle(salutejs_eva__dark);
@@ -55,7 +56,7 @@ const ButtonOutputComponent = forwardRef(({ onClick, pos_x, pos_y }, ref) => {
   if (pos_x === 0 && pos_y === 0) {
     return (
       <div className='saluteQuestionButton'>
-        <Button contentLeft={<IconPlusCircle />}  onClick={onClick} focused ref={(pos_x === 0 && pos_y === 0) ? ref : null} text="Выдай вопрос"></Button>
+        <Button focused outlined contentLeft={<IconPlusCircle />}  onClick={onClick}  ref={(pos_x === 0 && pos_y === 0) ? ref : null } text="Выдай вопрос"></Button>
         <output className="output-text">{onClick.outputText}</output>
       </div>
     );
@@ -146,15 +147,12 @@ const InfoButton = forwardRef(( { pos_y }, ref ) => {
 
   if (pos_y === 1) {
     return (
-      <div className='container' onClick={toggleMenu}>
-        <StyledInfoButtonRed id="button2" className = "InfoButton" ref={pos_y === 1 ? ref : null}>
-      <span>i</span>
-      <span class="nfo">NFO</span>
-      </StyledInfoButtonRed>
-  
+      <div onClick={toggleMenu} className='container'>
+        <Button focused pin = 'circle-circle' className='saluteInfoButton' contentLeft={<IconInfo />} id="button2" ref={pos_y === 1 ? ref : null}>
+      </Button>
       {isMenuOpen && (
-          <div className="info-menu">
-            <span className="close-button" onClick={closeMenu}>✘</span>
+           <Sheet isOpen = {isMenuOpen}>
+            <Body1>
             <h3>Инструкция</h3>
             <p>Вас приветствует тренировка ЧГК.</p>
             <p>У меня есть следующие действия:</p>
@@ -162,21 +160,20 @@ const InfoButton = forwardRef(( { pos_y }, ref ) => {
             <p>2. проверить ответ можно нажав на поле ввода "Введи ответ", написать текст и отправить его на кнопку "ОК", или словами: "Мой ответ".</p>
             <p>3. если вы не знаете ответ, то можно нажать на кнопку "Сдаться", и выведется правильный ответ.</p>
             <h3>Желаю удачи!</h3>
-          </div>
+            </Body1>
+           </Sheet>
         )}
+      
       </div>
     );
   } else {
     return (
       <div className='container' onClick={toggleMenu}>
-        <StyledInfoButtonGreen id="button2" className = "InfoButton" ref={pos_y === 1 ? ref : null}>
-      <span>i</span>
-      <span class="nfo">NFO</span>
-      </StyledInfoButtonGreen>
+        <Button  pin = 'circle-circle' className='saluteInfoButton' contentLeft={<IconInfo />} id="button2" ref={pos_y === 1 ? ref : null}></Button>
   
-      {isMenuOpen && (
-          <div className="info-menu">
-            <span className="close-button" onClick={closeMenu}>✘</span>
+        {isMenuOpen && (
+           <Sheet isOpen = {isMenuOpen}>
+            <Body1>
             <h3>Инструкция</h3>
             <p>Вас приветствует тренировка ЧГК.</p>
             <p>У меня есть следующие действия:</p>
@@ -184,8 +181,8 @@ const InfoButton = forwardRef(( { pos_y }, ref ) => {
             <p>2. проверить ответ можно нажав на поле ввода "Введи ответ", написать текст и отправить его на кнопку "ОК", или словами: "Мой ответ".</p>
             <p>3. если вы не знаете ответ, то можно нажать на кнопку "Сдаться", и выведется правильный ответ.</p>
             <h3>Желаю удачи!</h3>
-            {/* Add more information here */}
-          </div>
+            </Body1>
+           </Sheet>
         )}
       </div>
     );
@@ -199,13 +196,13 @@ const LoseButton = forwardRef(( { pos_x, pos_y, handleLoseClick }, ref ) => {
   if (pos_x === 2 && pos_y === 0) {
     return (
       <div className="saluteLoseButton">
-      <Button focused href="#" id="button3"  ref={(pos_x === 2 && pos_y === 0) ? ref : null}onClick={handleLoseClick}>Сдаться</Button>
+      <Button contentRight = {<IconCrossCircle/>} focused href="#" id="button3"  ref={(pos_x === 2 && pos_y === 0) ? ref : null}onClick={handleLoseClick} text = 'Сдаться'></Button>
     </div>
     );
   } else {
   return (
     <div className="saluteLoseButton">
-      <Button href="#" id="button3"  ref={(pos_x === 2 && pos_y === 0) ? ref : null}onClick={handleLoseClick}>Сдаться</Button>
+      <Button contentRight = {<IconCrossCircle/>} href="#" id="button3"  ref={(pos_x === 2 && pos_y === 0) ? ref : null}onClick={handleLoseClick} text = 'Сдаться'></Button>
     </div>
   );
   }
@@ -534,7 +531,9 @@ export class App extends React.Component {
         
         />
         <div className="output-text">{this.state.outputText}</div>
-    </div>     
+
+  
+   </div>     
     );
   }
 }
