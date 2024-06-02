@@ -6,6 +6,26 @@ input:focus {
   outline: none;
 }
 
+.saluteQuestionButton{
+ 
+  position:fixed;
+  top:70%;
+  left:30%;
+  height: 8vh;
+  width: 13vw;
+}
+
+.saluteInput{
+  position:fixed;
+  top:70%;
+  left:43.5%;
+  height: 8vh;
+  width: 13vw;
+  
+}
+
+
+
 .QuestionButton {
 	background:linear-gradient(to bottom, #44c767 5%, #5cbf2a 100%);
 	background-color:#44c767;
@@ -31,6 +51,15 @@ input:focus {
 	position:fixed;
 	top:70%;
 }
+
+.saluteLoseButton{
+  position:fixed;
+  top:70%;
+  left:60%;
+  height: 8vh;
+  width: 13vw;
+	}
+
 
 .LoseButton {
 	background:linear-gradient(to bottom, #fc8d83 5%, #e4685d 100%);

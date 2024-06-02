@@ -1,9 +1,37 @@
 import React, { createRef, forwardRef, useRef, useState } from 'react';
-import { createAssistant, createSmartappDebugger } from '@salutejs/client';
+import { createAssistant, createSmartappDebugger, CharacterId } from '@salutejs/client';
 import styled from "styled-components";
 import logo100 from './res/logo100-transformed.png';
+import { createGlobalStyle } from 'styled-components';
+import { salutejs_eva__dark, salutejs_joy__dark, salutejs_sber__dark} from '@salutejs/plasma-tokens/themes';
 import './App.css';
+import {
+    text, // Цвет текста
+    background, // Цвет подложки
+    gradient, // Градиент
+} from '@salutejs/plasma-tokens';
+import { Button, TextField, Container} from '@salutejs/plasma-ui'
+import { IconDownload, IconPlusCircle } from '@salutejs/plasma-icons';
 
+
+const ThemeBackgroundEva = createGlobalStyle(salutejs_eva__dark);
+const ThemeBackgroundSber = createGlobalStyle(salutejs_sber__dark);
+const ThemeBackgroundJoy = createGlobalStyle(salutejs_joy__dark);
+
+
+
+const DocumentStyle = createGlobalStyle`
+    html {
+        color: ${text};
+        background-color: ${background};
+        background-image: ${gradient};
+    }
+`;
+const ThemeStyle = createGlobalStyle(salutejs_sber__dark);
+
+
+
+let character = '';
 let TrueAnswer = 'test';
 let question = '';
 async function fetchQuestionAndSetState(callback) {
@@ -26,19 +54,20 @@ const StyledButtonOutputComponentRed = styled.button `border:3px solid red;`;
 const ButtonOutputComponent = forwardRef(({ onClick, pos_x, pos_y }, ref) => {
   if (pos_x === 0 && pos_y === 0) {
     return (
-      <div>
-        <StyledButtonOutputComponentRed className="QuestionButton" onClick={onClick} ref={(pos_x === 0 && pos_y === 0) ? ref : null}>Выдай вопрос</StyledButtonOutputComponentRed>
-        <output className="output-text">{onClick.outputText}</output>
-      </div>
-    );
-  } else {
-    return (
-      <div>
-        <StyledButtonOutputComponentGreen className="QuestionButton" onClick={onClick} ref={(pos_x === 0 && pos_y === 0) ? ref : null}>Выдай вопрос</StyledButtonOutputComponentGreen>
+      <div className='saluteQuestionButton'>
+        <Button contentLeft={<IconPlusCircle />}  onClick={onClick} focused ref={(pos_x === 0 && pos_y === 0) ? ref : null} text="Выдай вопрос"></Button>
         <output className="output-text">{onClick.outputText}</output>
       </div>
     );
   }
+  else{
+    return (
+        <div className='saluteQuestionButton'>
+          <Button contentLeft={<IconPlusCircle />} onClick={onClick}  ref={(pos_x === 0 && pos_y === 0) ? ref : null} text="Выдай вопрос"></Button>
+          <output className="output-text">{onClick.outputText}</output>
+        </div>
+      );
+  } 
 });
 
 function initializeAssistant(getState, getRecoveryState) {
@@ -72,11 +101,10 @@ const StyledInputRed = styled.input `border:3px solid red;`;
 const Input = forwardRef(({ inputValue, handleInputChange, handleKeyPress, pos_x, pos_y}, ref) => {
   if (pos_x === 1 && pos_y === 0) {
     return (
-      <div>
-        <StyledInputRed
+      <div className='saluteInput'>
+        <TextField focused
           id="input-text"
           type="text"
-          className="input-text"
           placeholder="Введи ответ:"
           value={inputValue}
           onChange={handleInputChange}
@@ -87,11 +115,10 @@ const Input = forwardRef(({ inputValue, handleInputChange, handleKeyPress, pos_x
     );
   } else {
     return (
-      <div>
-        <StyledInputGreen
+      <div className='saluteInput'>
+        <TextField
           id="input-text"
           type="text"
-          className="input-text"
           placeholder="Введи ответ:"
           value={inputValue}
           onChange={handleInputChange}
@@ -128,8 +155,13 @@ const InfoButton = forwardRef(( { pos_y }, ref ) => {
       {isMenuOpen && (
           <div className="info-menu">
             <span className="close-button" onClick={closeMenu}>✘</span>
-            <p>Help info test</p>
-            {/* Add more information here */}
+            <h3>Инструкция</h3>
+            <p>Вас приветствует тренировка ЧГК.</p>
+            <p>У меня есть следующие действия:</p>
+            <p>1. Выдать вопрос можно, нажав на кнопку "Выдай вопрос", или словами: "выдай вопрос", "придумай задачу".</p>
+            <p>2. проверить ответ можно нажав на поле ввода "Введи ответ", написать текст и отправить его на кнопку "ОК", или словами: "Мой ответ".</p>
+            <p>3. если вы не знаете ответ, то можно нажать на кнопку "Сдаться", и выведется правильный ответ.</p>
+            <h3>Желаю удачи!</h3>
           </div>
         )}
       </div>
@@ -145,7 +177,13 @@ const InfoButton = forwardRef(( { pos_y }, ref ) => {
       {isMenuOpen && (
           <div className="info-menu">
             <span className="close-button" onClick={closeMenu}>✘</span>
-            <p>Help info test</p>
+            <h3>Инструкция</h3>
+            <p>Вас приветствует тренировка ЧГК.</p>
+            <p>У меня есть следующие действия:</p>
+            <p>1. Выдать вопрос можно, нажав на кнопку "Выдай вопрос", или словами: "выдай вопрос", "придумай задачу".</p>
+            <p>2. проверить ответ можно нажав на поле ввода "Введи ответ", написать текст и отправить его на кнопку "ОК", или словами: "Мой ответ".</p>
+            <p>3. если вы не знаете ответ, то можно нажать на кнопку "Сдаться", и выведется правильный ответ.</p>
+            <h3>Желаю удачи!</h3>
             {/* Add more information here */}
           </div>
         )}
@@ -160,20 +198,21 @@ const StyledLoseButtonRed = styled.button `border:3px solid red;`;
 const LoseButton = forwardRef(( { pos_x, pos_y, handleLoseClick }, ref ) => {
   if (pos_x === 2 && pos_y === 0) {
     return (
-      <div>
-      <StyledLoseButtonRed href="#" id="button3" className="LoseButton" ref={(pos_x === 2 && pos_y === 0) ? ref : null}onClick={handleLoseClick}>Сдаться</StyledLoseButtonRed>
+      <div className="saluteLoseButton">
+      <Button focused href="#" id="button3"  ref={(pos_x === 2 && pos_y === 0) ? ref : null}onClick={handleLoseClick}>Сдаться</Button>
     </div>
     );
   } else {
   return (
-    <div>
-      <StyledLoseButtonGreen href="#" id="button3" className="LoseButton" ref={(pos_x === 2 && pos_y === 0) ? ref : null}onClick={handleLoseClick}>Сдаться</StyledLoseButtonGreen>
+    <div className="saluteLoseButton">
+      <Button href="#" id="button3"  ref={(pos_x === 2 && pos_y === 0) ? ref : null}onClick={handleLoseClick}>Сдаться</Button>
     </div>
   );
   }
 });
 
 export class App extends React.Component {
+    
   constructor(props) {
     super(props);
     this.state = {
@@ -237,6 +276,7 @@ export class App extends React.Component {
       console.log('assistant.on(data)', event);
       if (event.type === 'character') {
         console.log(`assistant.on(data): character: "${event?.character?.id}"`);
+        character = event?.character?.id
       } else if (event.type === 'insets') {
         console.log('assistant.on(data): insets');
       } else {
@@ -438,7 +478,9 @@ export class App extends React.Component {
       this.check_answer({ note: this.state.inputValue });
     }
   };
-  
+  get_character(){
+    return character
+  }
   render() {
     console.log('render');
     const { backgroundColor } = this.state;
@@ -448,10 +490,23 @@ export class App extends React.Component {
       padding: '20px',
       transition: 'background 0.5s ease'
     };
-
     return (
-      <div style={containerStyle}>
-        <Logo />
+        <div>
+             <DocumentStyle />
+            {(() => {
+                switch (character) {
+                    case 'sber':
+                        return <ThemeBackgroundSber />;
+                    case 'eva':
+                        return <ThemeBackgroundEva />;
+                    case 'joy':
+                        return <ThemeBackgroundJoy />;
+                    default:
+                        return;
+                }
+            })()}
+
+    <Logo />
         <Input
           pos_x={this.state.pos_x}
           pos_y={this.state.pos_y}
@@ -479,7 +534,7 @@ export class App extends React.Component {
         
         />
         <div className="output-text">{this.state.outputText}</div>
-      </div>
+    </div>     
     );
   }
 }
