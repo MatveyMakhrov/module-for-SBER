@@ -3,6 +3,9 @@ import { createAssistant, createSmartappDebugger, CharacterId } from '@salutejs/
 import styled from "styled-components";
 import logo100 from './res/logo100-transformed.png';
 import { createGlobalStyle } from 'styled-components';
+import { SpatialNavigation, useSpatialNavigation } from '@salutejs/spatial';
+
+
 import { salutejs_eva__dark, salutejs_joy__dark, salutejs_sber__dark} from '@salutejs/plasma-tokens/themes';
 import './App.css';
 import {
@@ -56,7 +59,7 @@ const ButtonOutputComponent = forwardRef(({ onClick, pos_x, pos_y }, ref) => {
   if (pos_x === 0 && pos_y === 0) {
     return (
       <div className='saluteQuestionButton'>
-        <Button focused outlined contentLeft={<IconPlusCircle />}  onClick={onClick}  ref={(pos_x === 0 && pos_y === 0) ? ref : null } text="Выдай вопрос"></Button>
+        <Button outlined focused contentLeft={<IconPlusCircle />}  onClick={onClick}  ref={(pos_x === 0 && pos_y === 0) ? ref : null } text="Выдай вопрос"></Button>
         <output className="output-text">{onClick.outputText}</output>
       </div>
     );
@@ -99,11 +102,11 @@ const Logo = () => {
 const StyledInputGreen = styled.input `border:3px solid #18ab29;`;
 const StyledInputRed = styled.input `border:3px solid red;`;
 
-const Input = forwardRef(({ inputValue, handleInputChange, handleKeyPress, pos_x, pos_y}, ref) => {
+const Input = forwardRef(({ inputValue, handleInputChange, handleKeyPress, pos_x, pos_y, disabled, onFocus}, ref) => {
   if (pos_x === 1 && pos_y === 0) {
     return (
       <div className='saluteInput'>
-        <TextField focused
+        <TextField $isFocused
           id="input-text"
           type="text"
           placeholder="Введи ответ:"
@@ -111,13 +114,15 @@ const Input = forwardRef(({ inputValue, handleInputChange, handleKeyPress, pos_x
           onChange={handleInputChange}
           onKeyDown={handleKeyPress}
           ref={pos_x === 1 ? ref : null}
+          onFocus={onFocus}
+          onClick={onFocus}
         />
       </div>
     );
   } else {
     return (
       <div className='saluteInput'>
-        <TextField
+        <TextField 
           id="input-text"
           type="text"
           placeholder="Введи ответ:"
@@ -125,6 +130,8 @@ const Input = forwardRef(({ inputValue, handleInputChange, handleKeyPress, pos_x
           onChange={handleInputChange}
           onKeyDown={handleKeyPress}
           ref={pos_x === 1 ? ref : null}
+          onFocus={onFocus}
+          onClick={onFocus}
         />
       </div>
     );
@@ -252,6 +259,7 @@ export class App extends React.Component {
           }
          break;
       }
+      
       this.setState(new_state);
       console.log(new_state.pos_x);
       console.log(new_state.pos_y);
@@ -304,6 +312,7 @@ export class App extends React.Component {
     console.log('componentDidMount');
   }
 
+  
   getStateForAssistant() {
     console.log('getStateForAssistant: this.state:', this.state);
     const state = {
@@ -468,11 +477,18 @@ export class App extends React.Component {
 
   handleInputChange = (event) => {
     this.setState({ inputValue: event.target.value });
+
   };
 
   handleKeyPress = (event) => {
     if (event.key === 'Enter') {
-      this.check_answer({ note: this.state.inputValue });
+      if(this.state.inputValue  != ''){
+        this.check_answer({ note: this.state.inputValue });
+      }
+      else{
+        this.anyButton.current.blur();
+      }
+      
     }
   };
   get_character(){
@@ -488,22 +504,21 @@ export class App extends React.Component {
       transition: 'background 0.5s ease'
     };
     return (
-        <div>
-             <DocumentStyle />
-            {(() => {
-                switch (character) {
-                    case 'sber':
-                        return <ThemeBackgroundSber />;
-                    case 'eva':
-                        return <ThemeBackgroundEva />;
-                    case 'joy':
-                        return <ThemeBackgroundJoy />;
-                    default:
-                        return;
-                }
-            })()}
-
-    <Logo />
+      <div>
+        <DocumentStyle />
+        {(() => {
+          switch (character) {
+            case 'sber':
+              return <ThemeBackgroundSber />;
+            case 'eva':
+              return <ThemeBackgroundEva />;
+            case 'joy':
+              return <ThemeBackgroundJoy />;
+            default:
+              return;
+          }
+        })()}
+        <Logo />
         <Input
           pos_x={this.state.pos_x}
           pos_y={this.state.pos_y}
@@ -511,29 +526,38 @@ export class App extends React.Component {
           inputValue={this.state.inputValue}
           handleInputChange={this.handleInputChange}
           handleKeyPress={this.handleKeyPress}
+          disabled={this.state.pos_x !== 1 || this.state.pos_y !== 0} // Disable input when not selected
         />
         <InfoButton
           pos_x={this.state.pos_x}
           pos_y={this.state.pos_y}
           ref={this.anyButton}
+          onClick={() => {
+            this.anyButton.current.blur();
+          }}
+        
         />
         <LoseButton
           pos_x={this.state.pos_x}
           pos_y={this.state.pos_y}
           ref={this.anyButton}
-          handleLoseClick = {() => this.say_answer()}
+          handleLoseClick={() => {
+            this.say_answer();
+            this.anyButton.current.blur(); 
+          }}
         />
         <ButtonOutputComponent 
-        onClick={() => fetchQuestionAndSetState((text) => this.setState({ outputText: text }))}
-        pos_x={this.state.pos_x}
-        pos_y={this.state.pos_y}
-        ref={this.anyButton}
-        
+          onClick={() => {
+            fetchQuestionAndSetState((text) => this.setState({ outputText: text }));
+            this.anyButton.current.blur(); 
+          }}
+          pos_x={this.state.pos_x}
+          pos_y={this.state.pos_y}
+          ref={this.anyButton}
+          onFocus={() => this.setState({ pos_x: 1, pos_y: 0 })}
         />
         <div className="output-text">{this.state.outputText}</div>
-
-  
-   </div>     
+      </div>     
     );
   }
 }
