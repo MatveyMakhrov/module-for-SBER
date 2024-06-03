@@ -9,8 +9,8 @@ import { SpatialNavigation, useSpatialNavigation } from '@salutejs/spatial';
 import { salutejs_eva__dark, salutejs_joy__dark, salutejs_sber__dark} from '@salutejs/plasma-tokens/themes';
 import './App.css';
 import {
-    text, // Цвет текста
-    background, // Цвет подложки
+    text,
+    background,
     gradient
     
 } from '@salutejs/plasma-tokens';
@@ -39,7 +39,6 @@ let character = '';
 let TrueAnswer = 'test';
 let question = '';
 async function fetchQuestionAndSetState(callback) {
-  //this.state = ({backgroundColor: 'linear-gradient(135deg, #000000 2%,#9960b6 69%)'})
   try {
     let response = await fetch('https://4-gk.ru/api/v1/question/random');
     let data = await response.json();
@@ -416,13 +415,9 @@ export class App extends React.Component {
         const data = await response.json();
         if (data.isCorrect) {
           this.setState({ backgroundColor: 'linear-gradient(135deg, #000000 2%, #11877e 69%)' });
-          //const trueAns = ['Вы молодец!', 'Так держать!'];
-          //const idxTrue = (Math.random() * trueAns.length) | 0; 
           this._send_action_value('done', 'Вы молодец');
         } else {
           this.setState({ backgroundColor: 'linear-gradient(135deg, #000000 2%,#b42c2c 69%)' });
-          //const wrong = ['Попробуйте еще раз', 'Не отчаивайтесь', 'У вас все получится'];
-          //const idx = (Math.random() * wrong.length) | 0;
           this._send_action_value('wrongAns', 'Попробуйте еще раз');
         }
         this.setState({ inputValue: '' });
@@ -434,48 +429,23 @@ export class App extends React.Component {
     }
   }
 
-  add_note(action) {
-    console.log('add_note', action);
-    this.setState({
-      notes: [
-        ...this.state.notes,
-        {
-          id: Math.random().toString(36).substring(7),
-          title: action.note,
-          completed: false,
-        },
-      ],
-    });
-  }
-
   _send_action_value(action_id, value) {
     const data = {
       action: {
         action_id: action_id,
         parameters: {
-          // значение поля parameters может быть любым, но должно соответствовать серверной логике
-          value: value, // см.файл src/sc/noteDone.sc смартаппа в Studio Code
+          value: value,
         },
       },
     };
     const unsubscribe = this.assistant.sendData(data, (data) => {
-      // функция, вызываемая, если на sendData() был отправлен ответ
       const { type, payload } = data;
       console.log('sendData onData:', type, payload);
       unsubscribe();
     });
   }
 
-  play_done_note(id) {
-    const completed = this.state.notes.find(({ id }) => id)?.completed;
-    if (!completed) {
-      const texts = ['Молодец!', 'Красавчик!', 'Супер!'];
-      const idx = (Math.random() * texts.length) | 0;
-      this._send_action_value('done', texts[idx]);
-    }
-  }
-
-  handleInputChange = (event) => {
+   handleInputChange = (event) => {
     this.setState({ inputValue: event.target.value });
 
   };
@@ -491,9 +461,7 @@ export class App extends React.Component {
       
     }
   };
-  get_character(){
-    return character
-  }
+
   render() {
     console.log('render');
     const { backgroundColor } = this.state;
@@ -526,7 +494,7 @@ export class App extends React.Component {
           inputValue={this.state.inputValue}
           handleInputChange={this.handleInputChange}
           handleKeyPress={this.handleKeyPress}
-          disabled={this.state.pos_x !== 1 || this.state.pos_y !== 0} // Disable input when not selected
+          disabled={this.state.pos_x !== 1 || this.state.pos_y !== 0} 
         />
         <InfoButton
           pos_x={this.state.pos_x}
