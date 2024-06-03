@@ -55,10 +55,10 @@ const StyledButtonOutputComponentGreen = styled.button `border:3px solid #18ab29
 const StyledButtonOutputComponentRed = styled.button `border:3px solid red;`;
 
 const ButtonOutputComponent = forwardRef(({ onClick, pos_x, pos_y }, ref) => {
-  if (pos_x === 0 && pos_y === 0) {
+  if (pos_y === 2) {
     return (
       <div className='saluteQuestionButton'>
-        <Button outlined focused contentLeft={<IconPlusCircle />}  onClick={onClick}  ref={(pos_x === 0 && pos_y === 0) ? ref : null } text="Выдай вопрос"></Button>
+        <Button size='l' outlined focused contentLeft={<IconPlusCircle />}  onClick={onClick}  ref={(pos_y === 2) ? ref : null } text="Выдай вопрос"></Button>
         <output className="output-text">{onClick.outputText}</output>
       </div>
     );
@@ -66,7 +66,7 @@ const ButtonOutputComponent = forwardRef(({ onClick, pos_x, pos_y }, ref) => {
   else{
     return (
         <div className='saluteQuestionButton'>
-          <Button contentLeft={<IconPlusCircle />} onClick={onClick}  ref={(pos_x === 0 && pos_y === 0) ? ref : null} text="Выдай вопрос"></Button>
+          <Button size="l" contentLeft={<IconPlusCircle />} onClick={onClick}  ref={(pos_y === 2) ? ref : null} text="Выдай вопрос"   ></Button>
           <output className="output-text">{onClick.outputText}</output>
         </div>
       );
@@ -102,7 +102,7 @@ const StyledInputGreen = styled.input `border:3px solid #18ab29;`;
 const StyledInputRed = styled.input `border:3px solid red;`;
 
 const Input = forwardRef(({ inputValue, handleInputChange, handleKeyPress, pos_x, pos_y, disabled, onFocus}, ref) => {
-  if (pos_x === 1 && pos_y === 0) {
+  if (pos_y === 1) {
     return (
       <div className='saluteInput'>
         <TextField $isFocused
@@ -112,7 +112,7 @@ const Input = forwardRef(({ inputValue, handleInputChange, handleKeyPress, pos_x
           value={inputValue}
           onChange={handleInputChange}
           onKeyDown={handleKeyPress}
-          ref={pos_x === 1 ? ref : null}
+          ref={pos_y === 1 ? ref : null}
           onFocus={onFocus}
           onClick={onFocus}
         />
@@ -128,7 +128,7 @@ const Input = forwardRef(({ inputValue, handleInputChange, handleKeyPress, pos_x
           value={inputValue}
           onChange={handleInputChange}
           onKeyDown={handleKeyPress}
-          ref={pos_x === 1 ? ref : null}
+          ref={pos_y === 1 ? ref : null}
           onFocus={onFocus}
           onClick={onFocus}
         />
@@ -151,10 +151,10 @@ const InfoButton = forwardRef(( { pos_y }, ref ) => {
     setIsMenuOpen(false);
   };
 
-  if (pos_y === 1) {
+  if (pos_y === 3) {
     return (
       <div onClick={toggleMenu} className='container'>
-        <Button focused pin = 'circle-circle' className='saluteInfoButton' contentLeft={<IconInfo />} id="button2" ref={pos_y === 1 ? ref : null}>
+        <Button focused pin = 'circle-circle' className='saluteInfoButton' contentLeft={<IconInfo />} id="button2" ref={pos_y === 3 ? ref : null}>
       </Button>
       {isMenuOpen && (
            <Sheet isOpen = {isMenuOpen}>
@@ -175,7 +175,7 @@ const InfoButton = forwardRef(( { pos_y }, ref ) => {
   } else {
     return (
       <div className='container' onClick={toggleMenu}>
-        <Button  pin = 'circle-circle' className='saluteInfoButton' contentLeft={<IconInfo />} id="button2" ref={pos_y === 1 ? ref : null}></Button>
+        <Button  pin = 'circle-circle' className='saluteInfoButton' contentLeft={<IconInfo />} id="button2" ref={pos_y === 3 ? ref : null}></Button>
   
         {isMenuOpen && (
            <Sheet isOpen = {isMenuOpen}>
@@ -199,16 +199,16 @@ const StyledLoseButtonGreen = styled.button `border:3px solid #18ab29;`;
 const StyledLoseButtonRed = styled.button `border:3px solid red;`;
 
 const LoseButton = forwardRef(( { pos_x, pos_y, handleLoseClick }, ref ) => {
-  if (pos_x === 2 && pos_y === 0) {
+  if (pos_y === 0) {
     return (
       <div className="saluteLoseButton">
-      <Button contentRight = {<IconCrossCircle/>} focused href="#" id="button3"  ref={(pos_x === 2 && pos_y === 0) ? ref : null}onClick={handleLoseClick} text = 'Сдаться'></Button>
+      <Button contentRight = {<IconCrossCircle/>} focused href="#" id="button3"  ref={(pos_y === 0) ? ref : null}onClick={handleLoseClick} text = 'Сдаться'></Button>
     </div>
     );
   } else {
   return (
     <div className="saluteLoseButton">
-      <Button contentRight = {<IconCrossCircle/>} href="#" id="button3"  ref={(pos_x === 2 && pos_y === 0) ? ref : null}onClick={handleLoseClick} text = 'Сдаться'></Button>
+      <Button contentRight = {<IconCrossCircle/>} href="#" id="button3"  ref={(pos_y === 0) ? ref : null}onClick={handleLoseClick} text = 'Сдаться'></Button>
     </div>
   );
   }
@@ -234,7 +234,7 @@ export class App extends React.Component {
           break;
          case 'ArrowUp':
           // вверх
-          if (new_state.pos_y < 1) {
+          if (new_state.pos_y < 3) {
             new_state.pos_y += 1;
           }
           break;
@@ -474,18 +474,7 @@ export class App extends React.Component {
     return (
       <div>
         <DocumentStyle />
-        {(() => {
-          switch (character) {
-            case 'sber':
-              return <ThemeBackgroundSber />;
-            case 'eva':
-              return <ThemeBackgroundEva />;
-            case 'joy':
-              return <ThemeBackgroundJoy />;
-            default:
-              return;
-          }
-        })()}
+        <ThemeBackgroundSber />
         <Logo />
         <Input
           pos_x={this.state.pos_x}
@@ -522,7 +511,7 @@ export class App extends React.Component {
           pos_x={this.state.pos_x}
           pos_y={this.state.pos_y}
           ref={this.anyButton}
-          onFocus={() => this.setState({ pos_x: 1, pos_y: 0 })}
+          onFocus={() => this.setState({pos_y: 2 })}
         />
         <div className="output-text">{this.state.outputText}</div>
       </div>     
