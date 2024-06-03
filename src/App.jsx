@@ -1,13 +1,44 @@
 import React, { createRef, forwardRef, useRef, useState } from 'react';
-import { createAssistant, createSmartappDebugger } from '@salutejs/client';
+import { createAssistant, createSmartappDebugger, CharacterId } from '@salutejs/client';
 import styled from "styled-components";
 import logo100 from './res/logo100-transformed.png';
-import './App.css';
+import { createGlobalStyle } from 'styled-components';
+import { SpatialNavigation, useSpatialNavigation } from '@salutejs/spatial';
 
+
+import { salutejs_eva__dark, salutejs_joy__dark, salutejs_sber__dark} from '@salutejs/plasma-tokens/themes';
+import './App.css';
+import {
+    text,
+    background,
+    gradient
+    
+} from '@salutejs/plasma-tokens';
+import { Button, TextField, Container, Sheet, Body1} from '@salutejs/plasma-ui'
+import { IconDownload, IconPlusCircle, IconInfoCircleFill, IconInfo, IconCrossCircle } from '@salutejs/plasma-icons';
+
+
+const ThemeBackgroundEva = createGlobalStyle(salutejs_eva__dark);
+const ThemeBackgroundSber = createGlobalStyle(salutejs_sber__dark);
+const ThemeBackgroundJoy = createGlobalStyle(salutejs_joy__dark);
+
+
+
+const DocumentStyle = createGlobalStyle`
+    html {
+        color: ${text};
+        background-color: ${background};
+        background-image: ${gradient};
+    }
+`;
+const ThemeStyle = createGlobalStyle(salutejs_sber__dark);
+
+
+
+let character = '';
 let TrueAnswer = 'test';
 let question = '';
 async function fetchQuestionAndSetState(callback) {
-  //this.state = ({backgroundColor: 'linear-gradient(135deg, #000000 2%,#9960b6 69%)'})
   try {
     let response = await fetch('https://4-gk.ru/api/v1/question/random');
     let data = await response.json();
@@ -26,19 +57,20 @@ const StyledButtonOutputComponentRed = styled.button `border:3px solid red;`;
 const ButtonOutputComponent = forwardRef(({ onClick, pos_x, pos_y }, ref) => {
   if (pos_x === 0 && pos_y === 0) {
     return (
-      <div>
-        <StyledButtonOutputComponentRed className="QuestionButton" onClick={onClick} ref={(pos_x === 0 && pos_y === 0) ? ref : null}>Выдай вопрос</StyledButtonOutputComponentRed>
-        <output className="output-text">{onClick.outputText}</output>
-      </div>
-    );
-  } else {
-    return (
-      <div>
-        <StyledButtonOutputComponentGreen className="QuestionButton" onClick={onClick} ref={(pos_x === 0 && pos_y === 0) ? ref : null}>Выдай вопрос</StyledButtonOutputComponentGreen>
+      <div className='saluteQuestionButton'>
+        <Button outlined focused contentLeft={<IconPlusCircle />}  onClick={onClick}  ref={(pos_x === 0 && pos_y === 0) ? ref : null } text="Выдай вопрос"></Button>
         <output className="output-text">{onClick.outputText}</output>
       </div>
     );
   }
+  else{
+    return (
+        <div className='saluteQuestionButton'>
+          <Button contentLeft={<IconPlusCircle />} onClick={onClick}  ref={(pos_x === 0 && pos_y === 0) ? ref : null} text="Выдай вопрос"></Button>
+          <output className="output-text">{onClick.outputText}</output>
+        </div>
+      );
+  } 
 });
 
 function initializeAssistant(getState, getRecoveryState) {
@@ -69,34 +101,36 @@ const Logo = () => {
 const StyledInputGreen = styled.input `border:3px solid #18ab29;`;
 const StyledInputRed = styled.input `border:3px solid red;`;
 
-const Input = forwardRef(({ inputValue, handleInputChange, handleKeyPress, pos_x, pos_y}, ref) => {
+const Input = forwardRef(({ inputValue, handleInputChange, handleKeyPress, pos_x, pos_y, disabled, onFocus}, ref) => {
   if (pos_x === 1 && pos_y === 0) {
     return (
-      <div>
-        <StyledInputRed
+      <div className='saluteInput'>
+        <TextField $isFocused
           id="input-text"
           type="text"
-          className="input-text"
           placeholder="Введи ответ:"
           value={inputValue}
           onChange={handleInputChange}
           onKeyDown={handleKeyPress}
           ref={pos_x === 1 ? ref : null}
+          onFocus={onFocus}
+          onClick={onFocus}
         />
       </div>
     );
   } else {
     return (
-      <div>
-        <StyledInputGreen
+      <div className='saluteInput'>
+        <TextField 
           id="input-text"
           type="text"
-          className="input-text"
           placeholder="Введи ответ:"
           value={inputValue}
           onChange={handleInputChange}
           onKeyDown={handleKeyPress}
           ref={pos_x === 1 ? ref : null}
+          onFocus={onFocus}
+          onClick={onFocus}
         />
       </div>
     );
@@ -119,15 +153,12 @@ const InfoButton = forwardRef(( { pos_y }, ref ) => {
 
   if (pos_y === 1) {
     return (
-      <div className='container' onClick={toggleMenu}>
-        <StyledInfoButtonRed id="button2" className = "InfoButton" ref={pos_y === 1 ? ref : null}>
-      <span>i</span>
-      <span class="nfo">NFO</span>
-      </StyledInfoButtonRed>
-  
+      <div onClick={toggleMenu} className='container'>
+        <Button focused pin = 'circle-circle' className='saluteInfoButton' contentLeft={<IconInfo />} id="button2" ref={pos_y === 1 ? ref : null}>
+      </Button>
       {isMenuOpen && (
-          <div className="info-menu">
-            <span className="close-button" onClick={closeMenu}>✘</span>
+           <Sheet isOpen = {isMenuOpen}>
+            <Body1>
             <h3>Инструкция</h3>
             <p>Вас приветствует тренировка ЧГК.</p>
             <p>У меня есть следующие действия:</p>
@@ -135,21 +166,20 @@ const InfoButton = forwardRef(( { pos_y }, ref ) => {
             <p>2. проверить ответ можно нажав на поле ввода "Введи ответ", написать текст и отправить его на кнопку "ОК", или словами: "Мой ответ".</p>
             <p>3. если вы не знаете ответ, то можно нажать на кнопку "Сдаться", и выведется правильный ответ.</p>
             <h3>Желаю удачи!</h3>
-          </div>
+            </Body1>
+           </Sheet>
         )}
+      
       </div>
     );
   } else {
     return (
       <div className='container' onClick={toggleMenu}>
-        <StyledInfoButtonGreen id="button2" className = "InfoButton" ref={pos_y === 1 ? ref : null}>
-      <span>i</span>
-      <span class="nfo">NFO</span>
-      </StyledInfoButtonGreen>
+        <Button  pin = 'circle-circle' className='saluteInfoButton' contentLeft={<IconInfo />} id="button2" ref={pos_y === 1 ? ref : null}></Button>
   
-      {isMenuOpen && (
-          <div className="info-menu">
-            <span className="close-button" onClick={closeMenu}>✘</span>
+        {isMenuOpen && (
+           <Sheet isOpen = {isMenuOpen}>
+            <Body1>
             <h3>Инструкция</h3>
             <p>Вас приветствует тренировка ЧГК.</p>
             <p>У меня есть следующие действия:</p>
@@ -157,8 +187,8 @@ const InfoButton = forwardRef(( { pos_y }, ref ) => {
             <p>2. проверить ответ можно нажав на поле ввода "Введи ответ", написать текст и отправить его на кнопку "ОК", или словами: "Мой ответ".</p>
             <p>3. если вы не знаете ответ, то можно нажать на кнопку "Сдаться", и выведется правильный ответ.</p>
             <h3>Желаю удачи!</h3>
-            {/* Add more information here */}
-          </div>
+            </Body1>
+           </Sheet>
         )}
       </div>
     );
@@ -171,20 +201,21 @@ const StyledLoseButtonRed = styled.button `border:3px solid red;`;
 const LoseButton = forwardRef(( { pos_x, pos_y, handleLoseClick }, ref ) => {
   if (pos_x === 2 && pos_y === 0) {
     return (
-      <div>
-      <StyledLoseButtonRed href="#" id="button3" className="LoseButton" ref={(pos_x === 2 && pos_y === 0) ? ref : null}onClick={handleLoseClick}>Сдаться</StyledLoseButtonRed>
+      <div className="saluteLoseButton">
+      <Button contentRight = {<IconCrossCircle/>} focused href="#" id="button3"  ref={(pos_x === 2 && pos_y === 0) ? ref : null}onClick={handleLoseClick} text = 'Сдаться'></Button>
     </div>
     );
   } else {
   return (
-    <div>
-      <StyledLoseButtonGreen href="#" id="button3" className="LoseButton" ref={(pos_x === 2 && pos_y === 0) ? ref : null}onClick={handleLoseClick}>Сдаться</StyledLoseButtonGreen>
+    <div className="saluteLoseButton">
+      <Button contentRight = {<IconCrossCircle/>} href="#" id="button3"  ref={(pos_x === 2 && pos_y === 0) ? ref : null}onClick={handleLoseClick} text = 'Сдаться'></Button>
     </div>
   );
   }
 });
 
 export class App extends React.Component {
+    
   constructor(props) {
     super(props);
     this.state = {
@@ -227,6 +258,7 @@ export class App extends React.Component {
           }
          break;
       }
+      
       this.setState(new_state);
       console.log(new_state.pos_x);
       console.log(new_state.pos_y);
@@ -248,6 +280,7 @@ export class App extends React.Component {
       console.log('assistant.on(data)', event);
       if (event.type === 'character') {
         console.log(`assistant.on(data): character: "${event?.character?.id}"`);
+        character = event?.character?.id
       } else if (event.type === 'insets') {
         console.log('assistant.on(data): insets');
       } else {
@@ -278,6 +311,7 @@ export class App extends React.Component {
     console.log('componentDidMount');
   }
 
+  
   getStateForAssistant() {
     console.log('getStateForAssistant: this.state:', this.state);
     const state = {
@@ -381,13 +415,9 @@ export class App extends React.Component {
         const data = await response.json();
         if (data.isCorrect) {
           this.setState({ backgroundColor: 'linear-gradient(135deg, #000000 2%, #11877e 69%)' });
-          //const trueAns = ['Вы молодец!', 'Так держать!'];
-          //const idxTrue = (Math.random() * trueAns.length) | 0; 
           this._send_action_value('done', 'Вы молодец');
         } else {
           this.setState({ backgroundColor: 'linear-gradient(135deg, #000000 2%,#b42c2c 69%)' });
-          //const wrong = ['Попробуйте еще раз', 'Не отчаивайтесь', 'У вас все получится'];
-          //const idx = (Math.random() * wrong.length) | 0;
           this._send_action_value('wrongAns', 'Попробуйте еще раз');
         }
         this.setState({ inputValue: '' });
@@ -399,57 +429,39 @@ export class App extends React.Component {
     }
   }
 
-  add_note(action) {
-    console.log('add_note', action);
-    this.setState({
-      notes: [
-        ...this.state.notes,
-        {
-          id: Math.random().toString(36).substring(7),
-          title: action.note,
-          completed: false,
-        },
-      ],
-    });
-  }
-
   _send_action_value(action_id, value) {
     const data = {
       action: {
         action_id: action_id,
         parameters: {
-          // значение поля parameters может быть любым, но должно соответствовать серверной логике
-          value: value, // см.файл src/sc/noteDone.sc смартаппа в Studio Code
+          value: value,
         },
       },
     };
     const unsubscribe = this.assistant.sendData(data, (data) => {
-      // функция, вызываемая, если на sendData() был отправлен ответ
       const { type, payload } = data;
       console.log('sendData onData:', type, payload);
       unsubscribe();
     });
   }
 
-  play_done_note(id) {
-    const completed = this.state.notes.find(({ id }) => id)?.completed;
-    if (!completed) {
-      const texts = ['Молодец!', 'Красавчик!', 'Супер!'];
-      const idx = (Math.random() * texts.length) | 0;
-      this._send_action_value('done', texts[idx]);
-    }
-  }
-
-  handleInputChange = (event) => {
+   handleInputChange = (event) => {
     this.setState({ inputValue: event.target.value });
+
   };
 
   handleKeyPress = (event) => {
     if (event.key === 'Enter') {
-      this.check_answer({ note: this.state.inputValue });
+      if(this.state.inputValue  != ''){
+        this.check_answer({ note: this.state.inputValue });
+      }
+      else{
+        this.anyButton.current.blur();
+      }
+      
     }
   };
-  
+
   render() {
     console.log('render');
     const { backgroundColor } = this.state;
@@ -459,9 +471,21 @@ export class App extends React.Component {
       padding: '20px',
       transition: 'background 0.5s ease'
     };
-
     return (
-      <div style={containerStyle}>
+      <div>
+        <DocumentStyle />
+        {(() => {
+          switch (character) {
+            case 'sber':
+              return <ThemeBackgroundSber />;
+            case 'eva':
+              return <ThemeBackgroundEva />;
+            case 'joy':
+              return <ThemeBackgroundJoy />;
+            default:
+              return;
+          }
+        })()}
         <Logo />
         <Input
           pos_x={this.state.pos_x}
@@ -470,27 +494,38 @@ export class App extends React.Component {
           inputValue={this.state.inputValue}
           handleInputChange={this.handleInputChange}
           handleKeyPress={this.handleKeyPress}
+          disabled={this.state.pos_x !== 1 || this.state.pos_y !== 0} 
         />
         <InfoButton
           pos_x={this.state.pos_x}
           pos_y={this.state.pos_y}
           ref={this.anyButton}
+          onClick={() => {
+            this.anyButton.current.blur();
+          }}
+        
         />
         <LoseButton
           pos_x={this.state.pos_x}
           pos_y={this.state.pos_y}
           ref={this.anyButton}
-          handleLoseClick = {() => this.say_answer()}
+          handleLoseClick={() => {
+            this.say_answer();
+            this.anyButton.current.blur(); 
+          }}
         />
         <ButtonOutputComponent 
-        onClick={() => fetchQuestionAndSetState((text) => this.setState({ outputText: text }))}
-        pos_x={this.state.pos_x}
-        pos_y={this.state.pos_y}
-        ref={this.anyButton}
-        
+          onClick={() => {
+            fetchQuestionAndSetState((text) => this.setState({ outputText: text }));
+            this.anyButton.current.blur(); 
+          }}
+          pos_x={this.state.pos_x}
+          pos_y={this.state.pos_y}
+          ref={this.anyButton}
+          onFocus={() => this.setState({ pos_x: 1, pos_y: 0 })}
         />
         <div className="output-text">{this.state.outputText}</div>
-      </div>
+      </div>     
     );
   }
 }
