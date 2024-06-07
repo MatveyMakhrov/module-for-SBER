@@ -16,6 +16,7 @@ import {
 } from '@salutejs/plasma-tokens';
 import { Button, TextField, Container, Sheet, Body1} from '@salutejs/plasma-ui'
 import { IconDownload, IconPlusCircle, IconInfoCircleFill, IconInfo, IconCrossCircle } from '@salutejs/plasma-icons';
+import { wait } from '@testing-library/user-event/dist/cjs/utils/index.js';
 
 
 const ThemeBackgroundEva = createGlobalStyle(salutejs_eva__dark);
@@ -158,7 +159,7 @@ const InfoButton = forwardRef(( { pos_y }, ref ) => {
       </Button>
       {isMenuOpen && (
            <Sheet isOpen = {isMenuOpen}>
-            <Body1>
+            <Body1 style={{ textAlign: 'center' }}>
             <h3>Инструкция</h3>
             <p>Вас приветствует тренировка ЧГК.</p>
             <p>У меня есть следующие действия:</p>
@@ -414,11 +415,11 @@ export class App extends React.Component {
       if (response.ok) {
         const data = await response.json();
         if (data.isCorrect) {
-          this.setState({ backgroundColor: 'linear-gradient(135deg, #000000 2%, #11877e 69%)' });
-          this._send_action_value('done', 'Вы молодец');
+          this._send_action_value('done', 'Очень хорошо');
+          //this.add_question(action);
         } else {
           this.setState({ backgroundColor: 'linear-gradient(135deg, #000000 2%,#b42c2c 69%)' });
-          this._send_action_value('wrongAns', 'Попробуйте еще раз');
+          this._send_action_value('wrongAns', 'Нужно попробовать еще раз');
         }
         this.setState({ inputValue: '' });
       } else {
@@ -499,19 +500,22 @@ export class App extends React.Component {
           pos_y={this.state.pos_y}
           ref={this.anyButton}
           handleLoseClick={() => {
+            this.pos_y = 0;
+            //this.add_question();
             this.say_answer();
+            
             this.anyButton.current.blur(); 
           }}
         />
         <ButtonOutputComponent 
           onClick={() => {
-            fetchQuestionAndSetState((text) => this.setState({ outputText: text }));
-            this.anyButton.current.blur(); 
+           this.add_question();
+           this.anyButton.current.blur();
+           this.pos_y = 2;
           }}
           pos_x={this.state.pos_x}
           pos_y={this.state.pos_y}
           ref={this.anyButton}
-          onFocus={() => this.setState({pos_y: 2 })}
         />
         <div className="output-text">{this.state.outputText}</div>
       </div>     
