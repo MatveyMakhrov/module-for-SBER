@@ -9,18 +9,18 @@ input:focus {
 .saluteQuestionButton{
  
   position:fixed;
-  top:70%;
-  left:30%;
+  top:20%;
+  left: 65%;
   height: 8vh;
-  width: 13vw;
+  width: 15vw;
 }
 
 .saluteInput{
   position:fixed;
-  top:70%;
-  left:43.5%;
+  top:40%;
+  left:65%;
   height: 8vh;
-  width: 15vw;
+  width: 13vw;
   
 }
 
@@ -54,10 +54,10 @@ input:focus {
 
 .saluteLoseButton{
   position:fixed;
-  top:70%;
-  left:60%;
+  top:60%;
+  left:65%;
   height: 8vh;
-  width: 13vw;
+  width: 30vw;
 	}
 
 
@@ -90,8 +90,8 @@ input:focus {
 .logo-container {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-
+  align-items: center;
+  height: 100vh;
 }
 
 .logo {
@@ -132,12 +132,12 @@ input:focus {
   color: #ffffff;
   display: block;
   padding: 10px;
-  font-size: 20px;
+  font-size: 32px;
   text-align: center;
   position:fixed;
-  top:35%;
-  left:35%;
-  height: 30vh;
+  top:15%;
+  left:5%;
+  height: 60vh;
   width: 30vw;
   overflow-wrap: break-word;
   overflow: overlay;
@@ -163,8 +163,8 @@ input:focus {
 
 .saluteInfoButton{
   position:fixed;
-  top:-230px;
-  left:65%;
+  top: -95vh;
+  left: 65vw;
 }
 
 .InfoButton {
