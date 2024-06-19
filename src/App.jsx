@@ -16,7 +16,6 @@ import {
 } from '@salutejs/plasma-tokens';
 import { Button, TextField, Container, Sheet, Body1} from '@salutejs/plasma-ui'
 import { IconDownload, IconPlusCircle, IconInfoCircleFill, IconInfo, IconCrossCircle } from '@salutejs/plasma-icons';
-import { wait } from '@testing-library/user-event/dist/cjs/utils/index.js';
 
 
 const ThemeBackgroundEva = createGlobalStyle(salutejs_eva__dark);
@@ -52,14 +51,11 @@ async function fetchQuestionAndSetState(callback) {
   }
 }
 
-const StyledButtonOutputComponentGreen = styled.button `border:3px solid #18ab29;`;
-const StyledButtonOutputComponentRed = styled.button `border:3px solid red;`;
-
-const ButtonOutputComponent = forwardRef(({ onClick, pos_x, pos_y }, ref) => {
+const ButtonOutputComponent = forwardRef(({ onClick, pos_y }, ref) => {
   if (pos_y === 2) {
     return (
       <div className='saluteQuestionButton'>
-        <Button size='l' outlined focused contentLeft={<IconPlusCircle />}  onClick={onClick}  ref={(pos_y === 2) ? ref : null } text="Выдай вопрос"></Button>
+        <Button outlined focused contentLeft={<IconPlusCircle />}  onClick={onClick}  ref={(pos_y === 2) ? ref : null } text="Выдай вопрос"></Button>
         <output className="output-text">{onClick.outputText}</output>
       </div>
     );
@@ -67,7 +63,7 @@ const ButtonOutputComponent = forwardRef(({ onClick, pos_x, pos_y }, ref) => {
   else{
     return (
         <div className='saluteQuestionButton'>
-          <Button size="l" contentLeft={<IconPlusCircle />} onClick={onClick}  ref={(pos_y === 2) ? ref : null} text="Выдай вопрос"   ></Button>
+          <Button contentLeft={<IconPlusCircle />} onClick={onClick}  ref={(pos_y === 2) ? ref : null} text="Выдай вопрос"></Button>
           <output className="output-text">{onClick.outputText}</output>
         </div>
       );
@@ -99,10 +95,7 @@ const Logo = () => {
   );
 };
 
-const StyledInputGreen = styled.input `border:3px solid #18ab29;`;
-const StyledInputRed = styled.input `border:3px solid red;`;
-
-const Input = forwardRef(({ inputValue, handleInputChange, handleKeyPress, pos_x, pos_y, disabled, onFocus}, ref) => {
+const Input = forwardRef(({ inputValue, handleInputChange, handleKeyPress, pos_y, disabled, onFocus}, ref) => {
   if (pos_y === 1) {
     return (
       <div className='saluteInput'>
@@ -132,6 +125,7 @@ const Input = forwardRef(({ inputValue, handleInputChange, handleKeyPress, pos_x
           ref={pos_y === 1 ? ref : null}
           onFocus={onFocus}
           onClick={onFocus}
+          disabled
         />
       </div>
     );
@@ -148,35 +142,33 @@ const InfoButton = forwardRef(( { pos_y }, ref ) => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const closeMenu = () => {
-    setIsMenuOpen(false);
-  };
-
   if (pos_y === 3) {
     return (
       <div onClick={toggleMenu} className='container'>
-        <Button focused pin = 'circle-circle' className='saluteInfoButton' contentLeft={<IconInfo />} id="button2" ref={pos_y === 3 ? ref : null}>
+        <Button focused pin = 'circle-circle' className='saluteInfoButton' contentLeft={<IconInfo />} id="button2" ref={pos_y === 3 ? ref : null} outlined = {true}>
       </Button>
       {isMenuOpen && (
            <Sheet isOpen = {isMenuOpen}>
-            <Body1 style={{ textAlign: 'center' }}>
+            <Body1>
             <h3>Инструкция</h3>
             <p>Вас приветствует тренировка ЧГК.</p>
             <p>У меня есть следующие действия:</p>
             <p>1. Выдать вопрос можно, нажав на кнопку "Выдай вопрос", или словами: "выдай вопрос", "придумай задачу".</p>
-            <p>2. проверить ответ можно нажав на поле ввода "Введи ответ", написать текст и отправить его на кнопку "ОК", или словами: "Мой ответ".</p>
-            <p>3. если вы не знаете ответ, то можно нажать на кнопку "Сдаться", и выведется правильный ответ.</p>
+            <p>2. Проверить ответ можно нажав на поле ввода "Введи ответ", написать текст и отправить его на кнопку "ОК", или словами: "Мой ответ".</p>
+            <p>3. Если вы не знаете ответ, то можно нажать на кнопку "Сдаться", и выведется правильный ответ.</p>
             <h3>Желаю удачи!</h3>
+            <h4>Чтобы закрыть инструкцию, необходимо нажать "ОК"</h4>
             </Body1>
            </Sheet>
         )}
       
       </div>
     );
-  } else {
+  } 
+  else {
     return (
       <div className='container' onClick={toggleMenu}>
-        <Button  pin = 'circle-circle' className='saluteInfoButton' contentLeft={<IconInfo />} id="button2" ref={pos_y === 3 ? ref : null}></Button>
+        <Button pin = 'circle-circle' className='saluteInfoButton' contentLeft={<IconInfo />} id="button2" ref={pos_y === 4 ? ref : null} outlined = {false}></Button>
   
         {isMenuOpen && (
            <Sheet isOpen = {isMenuOpen}>
@@ -185,9 +177,10 @@ const InfoButton = forwardRef(( { pos_y }, ref ) => {
             <p>Вас приветствует тренировка ЧГК.</p>
             <p>У меня есть следующие действия:</p>
             <p>1. Выдать вопрос можно, нажав на кнопку "Выдай вопрос", или словами: "выдай вопрос", "придумай задачу".</p>
-            <p>2. проверить ответ можно нажав на поле ввода "Введи ответ", написать текст и отправить его на кнопку "ОК", или словами: "Мой ответ".</p>
-            <p>3. если вы не знаете ответ, то можно нажать на кнопку "Сдаться", и выведется правильный ответ.</p>
+            <p>2. Проверить ответ можно нажав на поле ввода "Введи ответ", написать текст и отправить его на кнопку "ОК", или словами: "Мой ответ".</p>
+            <p>3. Если вы не знаете ответ, то можно нажать на кнопку "Сдаться", и выведется правильный ответ.</p>
             <h3>Желаю удачи!</h3>
+            <h4>Чтобы закрыть инструкцию, необходимо нажать "ОК"</h4>
             </Body1>
            </Sheet>
         )}
@@ -199,7 +192,7 @@ const InfoButton = forwardRef(( { pos_y }, ref ) => {
 const StyledLoseButtonGreen = styled.button `border:3px solid #18ab29;`;
 const StyledLoseButtonRed = styled.button `border:3px solid red;`;
 
-const LoseButton = forwardRef(( { pos_x, pos_y, handleLoseClick }, ref ) => {
+const LoseButton = forwardRef(( { pos_y, handleLoseClick }, ref ) => {
   if (pos_y === 0) {
     return (
       <div className="saluteLoseButton">
@@ -415,11 +408,11 @@ export class App extends React.Component {
       if (response.ok) {
         const data = await response.json();
         if (data.isCorrect) {
-          this._send_action_value('done', 'Очень хорошо');
-          //this.add_question(action);
+          this.setState({ backgroundColor: 'linear-gradient(135deg, #000000 2%, #11877e 69%)' });
+          this._send_action_value('done', 'Вы молодец');
         } else {
           this.setState({ backgroundColor: 'linear-gradient(135deg, #000000 2%,#b42c2c 69%)' });
-          this._send_action_value('wrongAns', 'Нужно попробовать еще раз');
+          this._send_action_value('wrongAns', 'Попробуйте еще раз');
         }
         this.setState({ inputValue: '' });
       } else {
@@ -500,22 +493,19 @@ export class App extends React.Component {
           pos_y={this.state.pos_y}
           ref={this.anyButton}
           handleLoseClick={() => {
-            this.pos_y = 0;
-            //this.add_question();
             this.say_answer();
-            
             this.anyButton.current.blur(); 
           }}
         />
         <ButtonOutputComponent 
           onClick={() => {
-           this.add_question();
-           this.anyButton.current.blur();
-           this.pos_y = 2;
+            fetchQuestionAndSetState((text) => this.setState({ outputText: text }));
+            this.anyButton.current.blur(); 
           }}
           pos_x={this.state.pos_x}
           pos_y={this.state.pos_y}
           ref={this.anyButton}
+          onFocus={() => this.setState({ pos_x: 1, pos_y: 0 })}
         />
         <div className="output-text">{this.state.outputText}</div>
       </div>     
