@@ -141,7 +141,7 @@ const InfoButton = forwardRef(( { pos_y }, ref ) => {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-
+  
   if (pos_y === 3) {
     return (
       <div onClick={toggleMenu} className='container'>
@@ -157,33 +157,17 @@ const InfoButton = forwardRef(( { pos_y }, ref ) => {
             <p>2. Проверить ответ можно нажав на поле ввода "Введи ответ", написать текст и отправить его на кнопку "ОК", или словами: "Мой ответ".</p>
             <p>3. Если вы не знаете ответ, то можно нажать на кнопку "Сдаться", и выведется правильный ответ.</p>
             <h3>Желаю удачи!</h3>
-            <h4>Чтобы закрыть инструкцию, необходимо нажать "ОК"</h4>
+            <h4>Чтобы закрыть инструкцию, необходимо нажать "ОК" или кнопку "Вниз".</h4>
             </Body1>
            </Sheet>
         )}
-      
       </div>
     );
   } 
   else {
     return (
       <div className='container' onClick={toggleMenu}>
-        <Button pin = 'circle-circle' className='saluteInfoButton' contentLeft={<IconInfo />} id="button2" ref={pos_y === 4 ? ref : null} outlined = {false}></Button>
-  
-        {isMenuOpen && (
-           <Sheet isOpen = {isMenuOpen}>
-            <Body1>
-            <h3>Инструкция</h3>
-            <p>Вас приветствует тренировка ЧГК.</p>
-            <p>У меня есть следующие действия:</p>
-            <p>1. Выдать вопрос можно, нажав на кнопку "Выдай вопрос", или словами: "выдай вопрос", "придумай задачу".</p>
-            <p>2. Проверить ответ можно нажав на поле ввода "Введи ответ", написать текст и отправить его на кнопку "ОК", или словами: "Мой ответ".</p>
-            <p>3. Если вы не знаете ответ, то можно нажать на кнопку "Сдаться", и выведется правильный ответ.</p>
-            <h3>Желаю удачи!</h3>
-            <h4>Чтобы закрыть инструкцию, необходимо нажать "ОК"</h4>
-            </Body1>
-           </Sheet>
-        )}
+        <Button pin = 'circle-circle' className='saluteInfoButton' contentLeft={<IconInfo />} id="button2" ref={pos_y === 3 ? ref : null} outlined = {false}></Button>
       </div>
     );
   }
@@ -409,10 +393,10 @@ export class App extends React.Component {
         const data = await response.json();
         if (data.isCorrect) {
           this.setState({ backgroundColor: 'linear-gradient(135deg, #000000 2%, #11877e 69%)' });
-          this._send_action_value('done', 'Вы молодец');
+          this._send_action_value('done', 'Молодец!');
         } else {
           this.setState({ backgroundColor: 'linear-gradient(135deg, #000000 2%,#b42c2c 69%)' });
-          this._send_action_value('wrongAns', 'Попробуйте еще раз');
+          this._send_action_value('wrongAns', 'Нужно попробовать ещё раз.');
         }
         this.setState({ inputValue: '' });
       } else {
