@@ -1,4 +1,4 @@
-import React, { createRef, forwardRef, useRef, useState } from 'react';
+import React, { createRef, forwardRef, useRef, useState, useEffect } from 'react';
 import { createAssistant, createSmartappDebugger, CharacterId } from '@salutejs/client';
 import styled from "styled-components";
 import logo100 from './res/logo100-transformed.png';
@@ -40,6 +40,7 @@ let TrueAnswer = 'test';
 let question = '';
 async function fetchQuestionAndSetState(callback) {
   try {
+    
     let response = await fetch('https://4-gk.ru/api/v1/question/random');
     let data = await response.json();
     TrueAnswer = data.question.answer;
@@ -55,16 +56,25 @@ const ButtonOutputComponent = forwardRef(({ onClick, pos_y }, ref) => {
   if (pos_y === 2) {
     return (
       <div className='saluteQuestionButton'>
+
+        <Button focused contentLeft={<IconPlusCircle />}  onClick={onClick}  ref={(pos_y === 2) ? ref : null } text="Выдай вопрос"></Button>
+
         <Button outlined focused contentLeft={<IconPlusCircle />}  onClick={onClick}  ref={(pos_y === 2) ? ref : null } text="Выдай вопрос"></Button>
         <output className="output-text">{onClick.outputText}</output>
+
       </div>
     );
   }
   else{
     return (
         <div className='saluteQuestionButton'>
+
+          <Button outlined={false} contentLeft={<IconPlusCircle />} text="Выдай вопрос"></Button>
+          
+
           <Button contentLeft={<IconPlusCircle />} onClick={onClick}  ref={(pos_y === 2) ? ref : null} text="Выдай вопрос"></Button>
           <output className="output-text">{onClick.outputText}</output>
+
         </div>
       );
   } 
@@ -168,8 +178,7 @@ const InfoButton = forwardRef(( { pos_y }, ref ) => {
   else {
     return (
       <div className='container' onClick={toggleMenu}>
-        <Button pin = 'circle-circle' className='saluteInfoButton' contentLeft={<IconInfo />} id="button2" ref={pos_y === 4 ? ref : null} outlined = {false}></Button>
-  
+        <Button pin = 'circle-circle' className='saluteInfoButton' contentLeft={<IconInfo />} id="button2" ref={pos_y === 3 ? ref : null} outlined = {false}></Button>
         {isMenuOpen && (
            <Sheet isOpen = {isMenuOpen}>
             <Body1>
@@ -202,7 +211,7 @@ const LoseButton = forwardRef(( { pos_y, handleLoseClick }, ref ) => {
   } else {
   return (
     <div className="saluteLoseButton">
-      <Button contentRight = {<IconCrossCircle/>} href="#" id="button3"  ref={(pos_y === 0) ? ref : null}onClick={handleLoseClick} text = 'Сдаться'></Button>
+      <Button outlined={false} contentRight = {<IconCrossCircle/>} href="#" id="button3"  ref={(pos_y === 0) ? ref : null} text = 'Сдаться'></Button>
     </div>
   );
   }
@@ -228,7 +237,7 @@ export class App extends React.Component {
           break;
          case 'ArrowUp':
           // вверх
-          if (new_state.pos_y < 3) {
+          if (new_state.pos_y < 2) {
             new_state.pos_y += 1;
           }
           break;
@@ -349,7 +358,6 @@ export class App extends React.Component {
 
   add_question(action) {
     console.log('add_question', action);
-    
     fetchQuestionAndSetState((text) => {
       this._send_action_value('voice', question);
       this.setState({ 
@@ -362,7 +370,10 @@ export class App extends React.Component {
   }
 
   say_answer(action){
-    this._send_action_value('voiceAns', TrueAnswer);
+    if(TrueAnswer != 'test'){
+      this._send_action_value('voiceAns', TrueAnswer);
+    }
+    
   }
 
   async read_answer(action) {
@@ -397,6 +408,7 @@ export class App extends React.Component {
   async check_answer(action) {
     console.log('check_answer', action);
     const userAnswer = action.note || this.state.inputValue;
+
     try {
       const response = await fetch('https://4-gk.ru/api/v1/answer/check', {
         method: 'POST',
@@ -414,13 +426,11 @@ export class App extends React.Component {
           this.setState({ backgroundColor: 'linear-gradient(135deg, #000000 2%,#b42c2c 69%)' });
           this._send_action_value('wrongAns', 'Попробуйте еще раз');
         }
-        this.setState({ inputValue: '' });
-      } else {
+      } catch (error) {
         this.setState({ inputValue: '' });
       }
-    } catch (error) {
-      this.setState({ inputValue: '' });
     }
+    
   }
 
   _send_action_value(action_id, value) {
@@ -479,15 +489,8 @@ export class App extends React.Component {
           handleKeyPress={this.handleKeyPress}
           disabled={this.state.pos_x !== 1 || this.state.pos_y !== 0} 
         />
-        <InfoButton
-          pos_x={this.state.pos_x}
-          pos_y={this.state.pos_y}
-          ref={this.anyButton}
-          onClick={() => {
-            this.anyButton.current.blur();
-          }}
+       
         
-        />
         <LoseButton
           pos_x={this.state.pos_x}
           pos_y={this.state.pos_y}
@@ -499,7 +502,7 @@ export class App extends React.Component {
         />
         <ButtonOutputComponent 
           onClick={() => {
-            fetchQuestionAndSetState((text) => this.setState({ outputText: text }));
+            this.add_question();
             this.anyButton.current.blur(); 
           }}
           pos_x={this.state.pos_x}
