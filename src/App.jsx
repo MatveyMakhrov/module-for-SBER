@@ -52,22 +52,29 @@ async function fetchQuestionAndSetState(callback) {
   }
 }
 
-const StyledButtonOutputComponentGreen = styled.button `border:3px solid #18ab29;`;
-const StyledButtonOutputComponentRed = styled.button `border:3px solid red;`;
-
 const ButtonOutputComponent = forwardRef(({ onClick, pos_y }, ref) => {
   if (pos_y === 2) {
     return (
       <div className='saluteQuestionButton'>
+
         <Button focused contentLeft={<IconPlusCircle />}  onClick={onClick}  ref={(pos_y === 2) ? ref : null } text="Выдай вопрос"></Button>
+
+        <Button outlined focused contentLeft={<IconPlusCircle />}  onClick={onClick}  ref={(pos_y === 2) ? ref : null } text="Выдай вопрос"></Button>
+        <output className="output-text">{onClick.outputText}</output>
+
       </div>
     );
   }
   else{
     return (
         <div className='saluteQuestionButton'>
+
           <Button outlined={false} contentLeft={<IconPlusCircle />} text="Выдай вопрос"></Button>
           
+
+          <Button contentLeft={<IconPlusCircle />} onClick={onClick}  ref={(pos_y === 2) ? ref : null} text="Выдай вопрос"></Button>
+          <output className="output-text">{onClick.outputText}</output>
+
         </div>
       );
   } 
@@ -171,8 +178,7 @@ const InfoButton = forwardRef(( { pos_y }, ref ) => {
   else {
     return (
       <div className='container' onClick={toggleMenu}>
-        <Button  pin = 'circle-circle' className='saluteInfoButton' contentLeft={<IconInfo />} id="button2" ref={pos_y === 4 ? ref : null} outlined = {false}></Button>
-  
+        <Button pin = 'circle-circle' className='saluteInfoButton' contentLeft={<IconInfo />} id="button2" ref={pos_y === 3 ? ref : null} outlined = {false}></Button>
         {isMenuOpen && (
            <Sheet isOpen = {isMenuOpen}>
             <Body1>
@@ -403,27 +409,22 @@ export class App extends React.Component {
     console.log('check_answer', action);
     const userAnswer = action.note || this.state.inputValue;
 
-    if(TrueAnswer != 'test'){
-      try {
-        const response = await fetch('https://4-gk.ru/api/v1/answer/check', {
-          method: 'POST',
-          body: JSON.stringify({
-            userAnswer: userAnswer,
-            correctAnswer: TrueAnswer,
-          }),
-        });
-        if (response.ok) {
-          const data = await response.json();
-          if (data.isCorrect) {
-            this.setState({ backgroundColor: 'linear-gradient(135deg, #000000 2%, #11877e 69%)' });
-            this._send_action_value('done', 'Молодец!');
-          } else {
-            this.setState({ backgroundColor: 'linear-gradient(135deg, #000000 2%,#b42c2c 69%)' });
-            this._send_action_value('wrongAns', 'Нужно попробовать еще раз.');
-          }
-          this.setState({ inputValue: '' });
+    try {
+      const response = await fetch('https://4-gk.ru/api/v1/answer/check', {
+        method: 'POST',
+        body: JSON.stringify({
+          userAnswer: userAnswer,
+          correctAnswer: TrueAnswer,
+        }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        if (data.isCorrect) {
+          this.setState({ backgroundColor: 'linear-gradient(135deg, #000000 2%, #11877e 69%)' });
+          this._send_action_value('done', 'Вы молодец');
         } else {
-          this.setState({ inputValue: '' });
+          this.setState({ backgroundColor: 'linear-gradient(135deg, #000000 2%,#b42c2c 69%)' });
+          this._send_action_value('wrongAns', 'Попробуйте еще раз');
         }
       } catch (error) {
         this.setState({ inputValue: '' });
@@ -501,7 +502,6 @@ export class App extends React.Component {
         />
         <ButtonOutputComponent 
           onClick={() => {
-            
             this.add_question();
             this.anyButton.current.blur(); 
           }}
