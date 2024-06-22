@@ -139,7 +139,7 @@ const StyledInfoButtonGreen = styled.button `border:3px solid #18ab29;`;
 const StyledInfoButtonRed = styled.button `border:3px solid red;`;
 
 const InfoButton = forwardRef(( { pos_y }, ref ) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(true);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -147,7 +147,7 @@ const InfoButton = forwardRef(( { pos_y }, ref ) => {
 
   if (pos_y === 3) {
     return (
-      <div onClick={toggleMenu} className='container'>
+      <div className='container'>
         <Button focused pin = 'circle-circle' className='saluteInfoButton' contentLeft={<IconInfo />} id="button2" ref={pos_y === 3 ? ref : null} outlined = {true}>
       </Button>
       {isMenuOpen && (
@@ -160,21 +160,20 @@ const InfoButton = forwardRef(( { pos_y }, ref ) => {
             <p>2. Проверить ответ можно нажав на поле ввода "Введи ответ", написать текст и отправить его на кнопку "ОК", или словами: "Мой ответ".</p>
             <p>3. Если вы не знаете ответ, то можно нажать на кнопку "Сдаться", и выведется правильный ответ.</p>
             <h3>Желаю удачи!</h3>
-            <h4>Чтобы закрыть инструкцию, необходимо нажать "ОК"</h4>
+            <h4>Чтобы закрыть инструкцию, необходимо нажать "Вниз"</h4>
             </Body1>
            </Sheet>
         )}
-      
       </div>
     );
   } 
   else {
     return (
       <div className='container'>
-        <Button  pin = 'circle-circle' className='saluteInfoButton' contentLeft={<IconInfo />} id="button2" ref={pos_y === 4 ? ref : null} outlined = {false}></Button>
+        <Button pin = 'circle-circle' className='saluteInfoButton' contentLeft={<IconInfo />} id="button2" ref={pos_y === 3 ? ref : null} outlined = {false}></Button>
   
         {isMenuOpen && (
-           <Sheet isOpen = {isMenuOpen}>
+           <Sheet isOpen = {!isMenuOpen}>
             <Body1>
             <h3>Инструкция</h3>
             <p>Вас приветствует тренировка ЧГК.</p>
@@ -216,8 +215,7 @@ export class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      pos_x : 0,
-      pos_y : 0
+      pos_y : 2
     }
     this.anyButton = createRef();
     window.addEventListener('keydown', (event) => {
@@ -235,18 +233,18 @@ export class App extends React.Component {
             new_state.pos_y += 1;
           }
           break;
-         case 'ArrowLeft':
-          // влево
-          if (new_state.pos_x > 0) {
-            new_state.pos_x -= 1;
-          }
-          break;
-         case 'ArrowRight':
-          // вправо
-          if (new_state.pos_x < 2) {
-            new_state.pos_x += 1;
-          }
-          break;
+        //  case 'ArrowLeft':
+        //   // влево
+        //   if (new_state.pos_x > 0) {
+        //     new_state.pos_x -= 1;
+        //   }
+        //   break;
+        //  case 'ArrowRight':
+        //   // вправо
+        //   if (new_state.pos_x < 2) {
+        //     new_state.pos_x += 1;
+        //   }
+        //   break;
          case 'Enter':
           // ок
           if (this.anyButton != null && this.anyButton.current != null) {
@@ -256,15 +254,16 @@ export class App extends React.Component {
          break;
       }
       
-      this.setState(new_state);
+      this.setState({
+        pos_y: new_state.pos_y
+      });
       console.log(new_state.pos_x);
       console.log(new_state.pos_y);
     });
     console.log('constructor');
 
     this.state = {
-      pos_x: 0,
-      pos_y: 0,
+      pos_y: 2,
       notes: [{ id: Math.random().toString(36).substring(7), title: 'тест' }],
       outputText: '',
       inputValue: '',
@@ -367,7 +366,9 @@ export class App extends React.Component {
     if(TrueAnswer != 'test'){
       this._send_action_value('voiceAns', TrueAnswer);
     }
-    
+    else {
+      this._send_action_value('errorAns', '');
+    }
   }
 
   async read_answer(action) {
